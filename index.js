@@ -1,3 +1,3 @@
-const server = require('./source/server/server');
+const server = require('./source/server/server')
 
-server();
+server()

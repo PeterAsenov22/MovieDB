@@ -27,21 +27,20 @@ class Footer extends Component {
     }
 
     $.ajax(request)
-     .done(data => {
-       this.setState({mostRecentMovies: data})
-     })
-     .fail(err => toastr.error(err.responseJSON.message))
+      .done(data => {
+        this.setState({mostRecentMovies: data})
+      })
+      .fail(err => toastr.error(err.responseJSON.message))
   }
 
   render () {
     let mostRecentMovies = this.state.mostRecentMovies.map(movie => {
-         return (
-           <li key={movie.id}>
-             <Link to={`/...`}>{movie.name}</Link>
-           </li>
-          )
-        }
-    )
+      return (
+        <li key={movie.id}>
+          <Link to={`/...`}>{movie.name}</Link>
+        </li>
+      )
+    })
 
     return (
       <footer>

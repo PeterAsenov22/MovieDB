@@ -5,7 +5,7 @@ import App from './components/App'
 import Home from './components/Home'
 
 export default (
-    <Route component={ App }>
-       <Route path='/' component={ Home } />
-    </Route>
+  <Route component={App}>
+    <Route path='/' component={Home} />
+  </Route>
 )

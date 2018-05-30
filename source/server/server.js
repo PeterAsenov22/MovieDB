@@ -1,30 +1,30 @@
 // Babel ES6/JSX Compiler
-require('babel-register');
+require('babel-register')
 
-const express = require('express');
+const express = require('express')
 
-const envConfig = require('./config/environment');
-const expressConfig = require('./config/express');
+const envConfig = require('./config/environment')
+const expressConfig = require('./config/express')
 
 module.exports = () => {
-    let app = express();
+  let app = express()
 
-    // Order matters!.
+  // Order matters!.
 
-    // Setup MongoDB connection
-    require('./config/database')(envConfig);
+  // Setup MongoDB connection
+  require('./config/database')(envConfig)
 
-    // Initialize passport
-    require('./config/passport')();
+  // Initialize passport
+  require('./config/passport')()
 
-    // Attach middleares, including passport
-    expressConfig.attachMiddleWares(app);
+  // Attach middleares, including passport
+  expressConfig.attachMiddleWares(app)
 
-    // Import server-routes.
-    require('./config/server-routes')(app);
+  // Import server-routes.
+  require('./config/server-routes')(app)
 
-    // Server React-router. This should be after server routes, to have higher priority.
-    expressConfig.serveReactRoutes(app);
+  // Server React-router. This should be after server routes, to have higher priority.
+  expressConfig.serveReactRoutes(app)
 
-    app.listen(app.get('port'), () => console.log(`Express listening on ${app.get('port')}`));
-};
+  app.listen(app.get('port'), () => console.log(`Express listening on ${app.get('port')}`))
+}
