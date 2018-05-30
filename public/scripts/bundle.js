@@ -1385,7 +1385,7 @@ var App = function (_React$Component) {
 
 exports.default = App;
 
-},{"./Footer":21,"./Navbar":23,"react":"react"}],21:[function(require,module,exports){
+},{"./Footer":21,"./Navbar":24,"react":"react"}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1632,6 +1632,291 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Helpers = require('../utilities/Helpers');
+
+var _Helpers2 = _interopRequireDefault(_Helpers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AddMovie = function (_React$Component) {
+  _inherits(AddMovie, _React$Component);
+
+  function AddMovie(props) {
+    _classCallCheck(this, AddMovie);
+
+    var _this = _possibleConstructorReturn(this, (AddMovie.__proto__ || Object.getPrototypeOf(AddMovie)).call(this, props));
+
+    _this.state = {
+      name: '',
+      description: '',
+      genres: [],
+      genresValidationState: '',
+      nameValidationState: '',
+      posterValidationState: '',
+      helpBlock: ''
+    };
+    return _this;
+  }
+
+  _createClass(AddMovie, [{
+    key: 'handleSubmit',
+    value: function handleSubmit(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+
+      var name = this.state.name.trim();
+      var genres = this.state.genres;
+      if (!name) {
+        this.setState({
+          nameValidationState: 'has-error',
+          helpBlock: 'Please enter Movie name!'
+        });
+      }
+      if (genres.length === 0) {
+        this.setState({
+          genresValidationState: 'has-error',
+          helpBlock: 'Please enter Movie name!'
+        });
+      }
+
+      if (name) {
+        var data = {
+          name: this.state.name,
+          description: this.state.description,
+          genres: this.state.genres
+        };
+
+        var request = {
+          url: '/api/movies/add',
+          method: 'POST',
+          data: JSON.stringify(data),
+          contentType: 'application/json'
+        };
+
+        $.ajax(request).done(function () {
+          _this2.props.history.pushState(null, '/');
+        }).fail(function () {
+          return console.log('movie post fail.');
+        });
+      }
+    }
+  }, {
+    key: 'handleNameChange',
+    value: function handleNameChange(e) {
+      var name = e.target.value;
+      this.setState({
+        name: name
+      });
+    }
+  }, {
+    key: 'handleDescriptionChange',
+    value: function handleDescriptionChange(e) {
+      var description = e.target.value;
+      this.setState({
+        description: description
+      });
+    }
+  }, {
+    key: 'handleGenresChange',
+    value: function handleGenresChange(e) {
+      var genreValue = e.target.value;
+      if (this.state.genres.indexOf(genreValue) === -1) {
+        this.setState(function (prevState) {
+          return {
+            genres: _Helpers2.default.appendToArray(genreValue, prevState.genres)
+          };
+        });
+      } else {
+        this.setState(function (prevState) {
+          return {
+            genres: _Helpers2.default.removeFromArray(genreValue, prevState.genres)
+          };
+        });
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'container' },
+        _react2.default.createElement(
+          'div',
+          { className: 'row flipInX animated' },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-sm-8' },
+            _react2.default.createElement(
+              'div',
+              { className: 'panel panel-default' },
+              _react2.default.createElement(
+                'div',
+                { className: 'panel-heading' },
+                'Add Movie'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'panel-body' },
+                _react2.default.createElement(
+                  'form',
+                  { onSubmit: this.handleSubmit.bind(this) },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'form-group ' + this.state.nameValidationState },
+                    _react2.default.createElement(
+                      'label',
+                      { className: 'control-label' },
+                      'Name'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'nameTextField',
+                      value: this.state.name,
+                      onChange: this.handleNameChange.bind(this), autoFocus: true }),
+                    _react2.default.createElement(
+                      'span',
+                      { className: 'help-block' },
+                      this.state.helpBlock
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                      'label',
+                      { className: 'control-label' },
+                      'Description'
+                    ),
+                    _react2.default.createElement('textarea', { className: 'form-control',
+                      rows: '5',
+                      value: this.state.description,
+                      onChange: this.handleDescriptionChange.bind(this) })
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'form-group ' + this.state.genresValidationState },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'checkbox checkbox-inline' },
+                      _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'action', value: 'Action',
+                        checked: this.state.genres.indexOf('Action') !== -1,
+                        onClick: this.handleGenresChange.bind(this) }),
+                      _react2.default.createElement(
+                        'label',
+                        { htmlFor: 'action' },
+                        'Action'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'checkbox checkbox-inline' },
+                      _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'horror', value: 'Horror',
+                        checked: this.state.genres.indexOf('Horror') !== -1,
+                        onChange: this.handleGenresChange.bind(this) }),
+                      _react2.default.createElement(
+                        'label',
+                        { htmlFor: 'horror' },
+                        'Horror'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'checkbox checkbox-inline' },
+                      _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'sci-fi', value: 'Sci-fi',
+                        checked: this.state.genres.indexOf('Sci-fi') !== -1,
+                        onChange: this.handleGenresChange.bind(this) }),
+                      _react2.default.createElement(
+                        'label',
+                        { htmlFor: 'sci-fi' },
+                        'Sci-fi'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'checkbox checkbox-inline' },
+                      _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'fantasy', value: 'Fantasy',
+                        checked: this.state.genres.indexOf('Fantasy') !== -1,
+                        onChange: this.handleGenresChange.bind(this) }),
+                      _react2.default.createElement(
+                        'label',
+                        { htmlFor: 'fantasy' },
+                        'Fantasy'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'checkbox checkbox-inline' },
+                      _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'romance', value: 'Romance',
+                        checked: this.state.genres.indexOf('Romance') !== -1,
+                        onChange: this.handleGenresChange.bind(this) }),
+                      _react2.default.createElement(
+                        'label',
+                        { htmlFor: 'romance' },
+                        'Romance'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'checkbox checkbox-inline' },
+                      _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'thriller', value: 'Thriller',
+                        checked: this.state.genres.indexOf('Thriller') !== -1,
+                        onChange: this.handleGenresChange.bind(this) }),
+                      _react2.default.createElement(
+                        'label',
+                        { htmlFor: 'thriller' },
+                        'Thriller'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'checkbox checkbox-inline' },
+                      _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'adventure', value: 'Adventure',
+                        checked: this.state.genres.indexOf('Adventure') !== -1,
+                        onChange: this.handleGenresChange.bind(this) }),
+                      _react2.default.createElement(
+                        'label',
+                        { htmlFor: 'adventure' },
+                        'Adventure'
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'button',
+                    { type: 'submit', className: 'btn btn-primary' },
+                    'Submit'
+                  )
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return AddMovie;
+}(_react2.default.Component);
+
+exports.default = AddMovie;
+
+},{"../utilities/Helpers":27,"react":"react"}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1746,7 +2031,7 @@ var Navbar = function (_Component) {
 
 exports.default = Navbar;
 
-},{"react":"react","react-router":"react-router"}],24:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],25:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -1779,7 +2064,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _routes2.default
 ), document.getElementById('app'));
 
-},{"./routes":25,"history/lib/createBrowserHistory":9,"react":"react","react-dom":"react-dom","react-router":"react-router"}],25:[function(require,module,exports){
+},{"./routes":26,"history/lib/createBrowserHistory":9,"react":"react","react-dom":"react-dom","react-router":"react-router"}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1800,14 +2085,64 @@ var _Home = require('./components/Home');
 
 var _Home2 = _interopRequireDefault(_Home);
 
+var _MovieAdd = require('./components/MovieAdd');
+
+var _MovieAdd2 = _interopRequireDefault(_MovieAdd);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _react2.default.createElement(
   _reactRouter.Route,
   { component: _App2.default },
-  _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default })
+  _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default }),
+  _react2.default.createElement(_reactRouter.Route, { path: '/movie/add', component: _MovieAdd2.default })
 );
 
-},{"./components/App":20,"./components/Home":22,"react":"react","react-router":"react-router"}]},{},[24])
+},{"./components/App":20,"./components/Home":22,"./components/MovieAdd":23,"react":"react","react-router":"react-router"}],27:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Helpers = function () {
+  function Helpers() {
+    _classCallCheck(this, Helpers);
+  }
+
+  _createClass(Helpers, null, [{
+    key: "appendToArray",
+    value: function appendToArray(value, array) {
+      array.push(value);
+      return array;
+    }
+  }, {
+    key: "prependToArray",
+    value: function prependToArray(value, array) {
+      array.unshift(value);
+      return array;
+    }
+  }, {
+    key: "removeFromArray",
+    value: function removeFromArray(value, array) {
+      var index = array.indexOf(value);
+      if (index !== -1) {
+        array.splice(index, 1);
+      }
+
+      return array;
+    }
+  }]);
+
+  return Helpers;
+}();
+
+exports.default = Helpers;
+
+},{}]},{},[25])
 
 //# sourceMappingURL=bundle.js.map
