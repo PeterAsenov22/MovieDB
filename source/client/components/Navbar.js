@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
+import NavbarUserMenu from './sub-components/NavbarUserMenu';
 
 class Navbar extends Component {
   constructor (props) {
@@ -17,6 +18,7 @@ class Navbar extends Component {
     })
   }
   render () {
+    let navbarUserMenu = <NavbarUserMenu userData={this.props.userData} />
     return (
       <nav className='navbar navbar-default navbar-static-top'>
         <div className='navbar-header'>
@@ -53,6 +55,7 @@ class Navbar extends Component {
               <Link to='/movie/add'>Add Movie</Link>
             </li>
           </ul>
+          {navbarUserMenu}
         </div>
       </nav>
     )
