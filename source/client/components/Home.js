@@ -1,28 +1,27 @@
 import React, { Component } from 'react'
 import MovieCard from './sub-components/MovieCard'
+import HomeActions from '../actions/HomeActions'
+import HomeStore from '../stores/HomeStore'
 
 class Home extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      topTenMovies: [],
-      error: ''
-    }
+    this.state = HomeStore.getState()
+
+    this.onChange = this.onChange.bind(this)
+  }
+
+  onChange (state) {
+    this.setState(state)
   }
 
   componentDidMount () {
-    let request = {
-      url: '/api/movies/top-ten',
-      method: 'get'
-    }
+    HomeStore.listen(this.onChange)
+    HomeActions.getTopTenMovies()
+  }
 
-    $.ajax(request)
-      .done(data => {
-        this.setState({topTenMovies: data})
-      })
-      .fail(error => {
-        this.setState({error: error.responseJSON.message})
-      })
+  componentWillUnmount () {
+    HomeStore.unlisten(this.onChange)
   }
 
   render () {

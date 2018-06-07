@@ -3039,7 +3039,89 @@ var FooterActions = function () {
 
 exports.default = _alt2.default.createActions(FooterActions);
 
-},{"../alt":36}],34:[function(require,module,exports){
+},{"../alt":37}],34:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HomeActions = function () {
+  function HomeActions() {
+    _classCallCheck(this, HomeActions);
+
+    this.generateActions('getTopTenMoviesSuccess', 'getTopTenMoviesFail');
+  }
+
+  _createClass(HomeActions, [{
+    key: 'getTopTenMovies',
+    value: function getTopTenMovies() {
+      var _this = this;
+
+      var request = {
+        url: '/api/movies/top-ten',
+        method: 'get'
+      };
+
+      $.ajax(request).done(function (data) {
+        var movies = [];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var movie = _step.value;
+
+            var movieData = {
+              _id: movie._id,
+              name: movie.name,
+              description: movie.description,
+              genres: movie.genres
+            };
+
+            movies.push(movieData);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
+        _this.getTopTenMoviesSuccess(movies);
+      }).fail(function (error) {
+        return _this.getTopTenMoviesFail(error);
+      });
+
+      return true;
+    }
+  }]);
+
+  return HomeActions;
+}();
+
+exports.default = _alt2.default.createActions(HomeActions);
+
+},{"../alt":37}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3062,7 +3144,7 @@ var NavbarActions = function NavbarActions() {
 
 exports.default = _alt2.default.createActions(NavbarActions);
 
-},{"../alt":36}],35:[function(require,module,exports){
+},{"../alt":37}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3129,7 +3211,7 @@ var UserActions = function () {
 
 exports.default = _alt2.default.createActions(UserActions);
 
-},{"../alt":36}],36:[function(require,module,exports){
+},{"../alt":37}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3144,7 +3226,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = new _alt2.default();
 
-},{"alt":3}],37:[function(require,module,exports){
+},{"alt":3}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3232,7 +3314,7 @@ var App = function (_React$Component) {
 
 exports.default = App;
 
-},{"../actions/UserActions":35,"../stores/UserStore":49,"./Footer":38,"./Navbar":41,"react":"react"}],38:[function(require,module,exports){
+},{"../actions/UserActions":36,"../stores/UserStore":51,"./Footer":39,"./Navbar":42,"react":"react"}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3416,7 +3498,7 @@ var Footer = function (_Component) {
 
 exports.default = Footer;
 
-},{"../actions/FooterActions":33,"../stores/FooterStore":47,"react":"react","react-router":"react-router"}],39:[function(require,module,exports){
+},{"../actions/FooterActions":33,"../stores/FooterStore":48,"react":"react","react-router":"react-router"}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3432,6 +3514,14 @@ var _react2 = _interopRequireDefault(_react);
 var _MovieCard = require('./sub-components/MovieCard');
 
 var _MovieCard2 = _interopRequireDefault(_MovieCard);
+
+var _HomeActions = require('../actions/HomeActions');
+
+var _HomeActions2 = _interopRequireDefault(_HomeActions);
+
+var _HomeStore = require('../stores/HomeStore');
+
+var _HomeStore2 = _interopRequireDefault(_HomeStore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3449,28 +3539,27 @@ var Home = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
 
-    _this.state = {
-      topTenMovies: [],
-      error: ''
-    };
+    _this.state = _HomeStore2.default.getState();
+
+    _this.onChange = _this.onChange.bind(_this);
     return _this;
   }
 
   _createClass(Home, [{
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
-      var request = {
-        url: '/api/movies/top-ten',
-        method: 'get'
-      };
-
-      $.ajax(request).done(function (data) {
-        _this2.setState({ topTenMovies: data });
-      }).fail(function (error) {
-        _this2.setState({ error: error.responseJSON.message });
-      });
+      _HomeStore2.default.listen(this.onChange);
+      _HomeActions2.default.getTopTenMovies();
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _HomeStore2.default.unlisten(this.onChange);
     }
   }, {
     key: 'render',
@@ -3509,7 +3598,7 @@ var Home = function (_Component) {
 
 exports.default = Home;
 
-},{"./sub-components/MovieCard":43,"react":"react"}],40:[function(require,module,exports){
+},{"../actions/HomeActions":34,"../stores/HomeStore":49,"./sub-components/MovieCard":44,"react":"react"}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3794,7 +3883,7 @@ var AddMovie = function (_React$Component) {
 
 exports.default = AddMovie;
 
-},{"../utilities/Helpers":50,"react":"react"}],41:[function(require,module,exports){
+},{"../utilities/Helpers":52,"react":"react"}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3944,7 +4033,7 @@ var Navbar = function (_Component) {
 
 exports.default = Navbar;
 
-},{"../actions/NavbarActions":34,"../stores/NavbarStore":48,"./sub-components/NavbarUserMenu":44,"react":"react","react-router":"react-router"}],42:[function(require,module,exports){
+},{"../actions/NavbarActions":35,"../stores/NavbarStore":50,"./sub-components/NavbarUserMenu":45,"react":"react","react-router":"react-router"}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4094,7 +4183,7 @@ var UserProfile = function (_Component) {
 
 exports.default = UserProfile;
 
-},{"react":"react"}],43:[function(require,module,exports){
+},{"react":"react"}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4187,7 +4276,7 @@ var MovieCard = function (_Component) {
 
 exports.default = MovieCard;
 
-},{"react":"react","react-router":"react-router"}],44:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4296,7 +4385,7 @@ var NavbarUserMenu = function (_Component) {
 
 exports.default = NavbarUserMenu;
 
-},{"react":"react","react-router":"react-router"}],45:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],46:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -4329,7 +4418,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _routes2.default
 ), document.getElementById('app'));
 
-},{"./routes":46,"history/lib/createBrowserHistory":20,"react":"react","react-dom":"react-dom","react-router":"react-router"}],46:[function(require,module,exports){
+},{"./routes":47,"history/lib/createBrowserHistory":20,"react":"react","react-dom":"react-dom","react-router":"react-router"}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4368,7 +4457,7 @@ exports.default = _react2.default.createElement(
   _react2.default.createElement(_reactRouter.Route, { path: '/user/profile/:userId', component: _UserProfile2.default })
 );
 
-},{"./components/App":37,"./components/Home":39,"./components/MovieAdd":40,"./components/UserProfile":42,"react":"react","react-router":"react-router"}],47:[function(require,module,exports){
+},{"./components/App":38,"./components/Home":40,"./components/MovieAdd":41,"./components/UserProfile":43,"react":"react","react-router":"react-router"}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4410,7 +4499,54 @@ var FooterStore = function () {
 
 exports.default = _alt2.default.createStore(FooterStore);
 
-},{"../actions/FooterActions":33,"../alt":36}],48:[function(require,module,exports){
+},{"../actions/FooterActions":33,"../alt":37}],49:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+var _HomeActions = require('../actions/HomeActions');
+
+var _HomeActions2 = _interopRequireDefault(_HomeActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HomeStore = function () {
+  function HomeStore() {
+    _classCallCheck(this, HomeStore);
+
+    this.bindActions(_HomeActions2.default);
+
+    this.topTenMovies = [];
+  }
+
+  _createClass(HomeStore, [{
+    key: 'onGetTopTenMoviesSuccess',
+    value: function onGetTopTenMoviesSuccess(movies) {
+      this.topTenMovies = movies;
+    }
+  }, {
+    key: 'onGetTopTenMoviesFail',
+    value: function onGetTopTenMoviesFail(err) {
+      console.log('Could not connect to DB', err);
+    }
+  }]);
+
+  return HomeStore;
+}();
+
+exports.default = _alt2.default.createStore(HomeStore);
+
+},{"../actions/HomeActions":34,"../alt":37}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4452,7 +4588,7 @@ var NavbarStore = function () {
 
 exports.default = _alt2.default.createStore(NavbarStore);
 
-},{"../actions/NavbarActions":34,"../alt":36}],49:[function(require,module,exports){
+},{"../actions/NavbarActions":35,"../alt":37}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4504,7 +4640,7 @@ var UserStore = function () {
 
 exports.default = _alt2.default.createStore(UserStore);
 
-},{"../actions/UserActions":35,"../alt":36}],50:[function(require,module,exports){
+},{"../actions/UserActions":36,"../alt":37}],52:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4549,6 +4685,6 @@ var Helpers = function () {
 
 exports.default = Helpers;
 
-},{}]},{},[45])
+},{}]},{},[46])
 
 //# sourceMappingURL=bundle.js.map
