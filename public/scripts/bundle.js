@@ -3039,7 +3039,7 @@ var FooterActions = function () {
 
 exports.default = _alt2.default.createActions(FooterActions);
 
-},{"../alt":37}],34:[function(require,module,exports){
+},{"../alt":38}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3121,7 +3121,58 @@ var HomeActions = function () {
 
 exports.default = _alt2.default.createActions(HomeActions);
 
-},{"../alt":37}],35:[function(require,module,exports){
+},{"../alt":38}],35:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MovieAddActions = function () {
+  function MovieAddActions() {
+    _classCallCheck(this, MovieAddActions);
+
+    this.generateActions('handleNameChange', 'handleDescriptionChange', 'handleGenresChange', 'nameValidationFail', 'genresValidationFail', 'addMovieSuccess', 'addMovieFail');
+  }
+
+  _createClass(MovieAddActions, [{
+    key: 'addMovie',
+    value: function addMovie(data) {
+      var _this = this;
+
+      var request = {
+        url: '/api/movies/add',
+        method: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json'
+      };
+
+      $.ajax(request).done(function () {
+        return _this.addMovieSuccess();
+      }).fail(function (err) {
+        return _this.addMovieFail(err);
+      });
+
+      return true;
+    }
+  }]);
+
+  return MovieAddActions;
+}();
+
+exports.default = _alt2.default.createActions(MovieAddActions);
+
+},{"../alt":38}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3144,7 +3195,7 @@ var NavbarActions = function NavbarActions() {
 
 exports.default = _alt2.default.createActions(NavbarActions);
 
-},{"../alt":37}],36:[function(require,module,exports){
+},{"../alt":38}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3211,7 +3262,7 @@ var UserActions = function () {
 
 exports.default = _alt2.default.createActions(UserActions);
 
-},{"../alt":37}],37:[function(require,module,exports){
+},{"../alt":38}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3226,7 +3277,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = new _alt2.default();
 
-},{"alt":3}],38:[function(require,module,exports){
+},{"alt":3}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3314,7 +3365,7 @@ var App = function (_React$Component) {
 
 exports.default = App;
 
-},{"../actions/UserActions":36,"../stores/UserStore":51,"./Footer":39,"./Navbar":42,"react":"react"}],39:[function(require,module,exports){
+},{"../actions/UserActions":37,"../stores/UserStore":53,"./Footer":40,"./Navbar":43,"react":"react"}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3498,7 +3549,7 @@ var Footer = function (_Component) {
 
 exports.default = Footer;
 
-},{"../actions/FooterActions":33,"../stores/FooterStore":48,"react":"react","react-router":"react-router"}],40:[function(require,module,exports){
+},{"../actions/FooterActions":33,"../stores/FooterStore":49,"react":"react","react-router":"react-router"}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3598,7 +3649,7 @@ var Home = function (_Component) {
 
 exports.default = Home;
 
-},{"../actions/HomeActions":34,"../stores/HomeStore":49,"./sub-components/MovieCard":44,"react":"react"}],41:[function(require,module,exports){
+},{"../actions/HomeActions":34,"../stores/HomeStore":50,"./sub-components/MovieCard":45,"react":"react"}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3611,9 +3662,13 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Helpers = require('../utilities/Helpers');
+var _MovieAddActions = require('../actions/MovieAddActions');
 
-var _Helpers2 = _interopRequireDefault(_Helpers);
+var _MovieAddActions2 = _interopRequireDefault(_MovieAddActions);
+
+var _MovieAddStore = require('../stores/MovieAddStore');
+
+var _MovieAddStore2 = _interopRequireDefault(_MovieAddStore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3631,38 +3686,39 @@ var AddMovie = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (AddMovie.__proto__ || Object.getPrototypeOf(AddMovie)).call(this, props));
 
-    _this.state = {
-      name: '',
-      description: '',
-      genres: [],
-      genresValidationState: '',
-      nameValidationState: '',
-      posterValidationState: '',
-      helpBlock: ''
-    };
+    _this.state = _MovieAddStore2.default.getState();
+
+    _this.onChange = _this.onChange.bind(_this);
     return _this;
   }
 
   _createClass(AddMovie, [{
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _MovieAddStore2.default.listen(this.onChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _MovieAddStore2.default.unlisten(this.onChange);
+    }
+  }, {
     key: 'handleSubmit',
     value: function handleSubmit(e) {
-      var _this2 = this;
-
       e.preventDefault();
 
       var name = this.state.name.trim();
       var genres = this.state.genres;
       if (!name) {
-        this.setState({
-          nameValidationState: 'has-error',
-          helpBlock: 'Please enter Movie name!'
-        });
+        _MovieAddActions2.default.nameValidationFail();
       }
       if (genres.length === 0) {
-        this.setState({
-          genresValidationState: 'has-error',
-          helpBlock: 'Please enter Movie name!'
-        });
+        _MovieAddActions2.default.genresValidationFail();
       }
 
       if (name) {
@@ -3672,52 +3728,7 @@ var AddMovie = function (_React$Component) {
           genres: this.state.genres
         };
 
-        var request = {
-          url: '/api/movies/add',
-          method: 'POST',
-          data: JSON.stringify(data),
-          contentType: 'application/json'
-        };
-
-        $.ajax(request).done(function () {
-          _this2.props.history.pushState(null, '/');
-        }).fail(function () {
-          return console.log('movie post fail.');
-        });
-      }
-    }
-  }, {
-    key: 'handleNameChange',
-    value: function handleNameChange(e) {
-      var name = e.target.value;
-      this.setState({
-        name: name
-      });
-    }
-  }, {
-    key: 'handleDescriptionChange',
-    value: function handleDescriptionChange(e) {
-      var description = e.target.value;
-      this.setState({
-        description: description
-      });
-    }
-  }, {
-    key: 'handleGenresChange',
-    value: function handleGenresChange(e) {
-      var genreValue = e.target.value;
-      if (this.state.genres.indexOf(genreValue) === -1) {
-        this.setState(function (prevState) {
-          return {
-            genres: _Helpers2.default.appendToArray(genreValue, prevState.genres)
-          };
-        });
-      } else {
-        this.setState(function (prevState) {
-          return {
-            genres: _Helpers2.default.removeFromArray(genreValue, prevState.genres)
-          };
-        });
+        _MovieAddActions2.default.addMovie(data);
       }
     }
   }, {
@@ -3756,7 +3767,7 @@ var AddMovie = function (_React$Component) {
                     ),
                     _react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'nameTextField',
                       value: this.state.name,
-                      onChange: this.handleNameChange.bind(this), autoFocus: true }),
+                      onChange: _MovieAddActions2.default.handleNameChange, autoFocus: true }),
                     _react2.default.createElement(
                       'span',
                       { className: 'help-block' },
@@ -3774,7 +3785,7 @@ var AddMovie = function (_React$Component) {
                     _react2.default.createElement('textarea', { className: 'form-control',
                       rows: '5',
                       value: this.state.description,
-                      onChange: this.handleDescriptionChange.bind(this) })
+                      onChange: _MovieAddActions2.default.handleDescriptionChange })
                   ),
                   _react2.default.createElement(
                     'div',
@@ -3784,7 +3795,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'action', value: 'Action',
                         checked: this.state.genres.indexOf('Action') !== -1,
-                        onClick: this.handleGenresChange.bind(this) }),
+                        onClick: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'action' },
@@ -3796,7 +3807,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'horror', value: 'Horror',
                         checked: this.state.genres.indexOf('Horror') !== -1,
-                        onChange: this.handleGenresChange.bind(this) }),
+                        onChange: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'horror' },
@@ -3808,7 +3819,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'sci-fi', value: 'Sci-fi',
                         checked: this.state.genres.indexOf('Sci-fi') !== -1,
-                        onChange: this.handleGenresChange.bind(this) }),
+                        onChange: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'sci-fi' },
@@ -3820,7 +3831,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'fantasy', value: 'Fantasy',
                         checked: this.state.genres.indexOf('Fantasy') !== -1,
-                        onChange: this.handleGenresChange.bind(this) }),
+                        onChange: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'fantasy' },
@@ -3832,7 +3843,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'romance', value: 'Romance',
                         checked: this.state.genres.indexOf('Romance') !== -1,
-                        onChange: this.handleGenresChange.bind(this) }),
+                        onChange: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'romance' },
@@ -3844,7 +3855,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'thriller', value: 'Thriller',
                         checked: this.state.genres.indexOf('Thriller') !== -1,
-                        onChange: this.handleGenresChange.bind(this) }),
+                        onChange: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'thriller' },
@@ -3856,7 +3867,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'adventure', value: 'Adventure',
                         checked: this.state.genres.indexOf('Adventure') !== -1,
-                        onChange: this.handleGenresChange.bind(this) }),
+                        onChange: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'adventure' },
@@ -3883,7 +3894,7 @@ var AddMovie = function (_React$Component) {
 
 exports.default = AddMovie;
 
-},{"../utilities/Helpers":52,"react":"react"}],42:[function(require,module,exports){
+},{"../actions/MovieAddActions":35,"../stores/MovieAddStore":51,"react":"react"}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4033,7 +4044,7 @@ var Navbar = function (_Component) {
 
 exports.default = Navbar;
 
-},{"../actions/NavbarActions":35,"../stores/NavbarStore":50,"./sub-components/NavbarUserMenu":45,"react":"react","react-router":"react-router"}],43:[function(require,module,exports){
+},{"../actions/NavbarActions":36,"../stores/NavbarStore":52,"./sub-components/NavbarUserMenu":46,"react":"react","react-router":"react-router"}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4183,7 +4194,7 @@ var UserProfile = function (_Component) {
 
 exports.default = UserProfile;
 
-},{"react":"react"}],44:[function(require,module,exports){
+},{"react":"react"}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4276,7 +4287,7 @@ var MovieCard = function (_Component) {
 
 exports.default = MovieCard;
 
-},{"react":"react","react-router":"react-router"}],45:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4385,7 +4396,7 @@ var NavbarUserMenu = function (_Component) {
 
 exports.default = NavbarUserMenu;
 
-},{"react":"react","react-router":"react-router"}],46:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],47:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -4418,7 +4429,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _routes2.default
 ), document.getElementById('app'));
 
-},{"./routes":47,"history/lib/createBrowserHistory":20,"react":"react","react-dom":"react-dom","react-router":"react-router"}],47:[function(require,module,exports){
+},{"./routes":48,"history/lib/createBrowserHistory":20,"react":"react","react-dom":"react-dom","react-router":"react-router"}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4457,7 +4468,7 @@ exports.default = _react2.default.createElement(
   _react2.default.createElement(_reactRouter.Route, { path: '/user/profile/:userId', component: _UserProfile2.default })
 );
 
-},{"./components/App":38,"./components/Home":40,"./components/MovieAdd":41,"./components/UserProfile":43,"react":"react","react-router":"react-router"}],48:[function(require,module,exports){
+},{"./components/App":39,"./components/Home":41,"./components/MovieAdd":42,"./components/UserProfile":44,"react":"react","react-router":"react-router"}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4499,7 +4510,7 @@ var FooterStore = function () {
 
 exports.default = _alt2.default.createStore(FooterStore);
 
-},{"../actions/FooterActions":33,"../alt":37}],49:[function(require,module,exports){
+},{"../actions/FooterActions":33,"../alt":38}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4546,7 +4557,102 @@ var HomeStore = function () {
 
 exports.default = _alt2.default.createStore(HomeStore);
 
-},{"../actions/HomeActions":34,"../alt":37}],50:[function(require,module,exports){
+},{"../actions/HomeActions":34,"../alt":38}],51:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+var _HomeActions = require('../actions/HomeActions');
+
+var _HomeActions2 = _interopRequireDefault(_HomeActions);
+
+var _Helpers = require('../utilities/Helpers');
+
+var _Helpers2 = _interopRequireDefault(_Helpers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MovieAddStore = function () {
+  function MovieAddStore() {
+    _classCallCheck(this, MovieAddStore);
+
+    this.bindActions(_HomeActions2.default);
+
+    this.name = '';
+    this.description = '';
+    this.genres = [];
+    this.genresValidationState = '';
+    this.nameValidationState = '';
+    this.moviePosterUrl = '';
+    this.helpBlock = '';
+  }
+
+  _createClass(MovieAddStore, [{
+    key: 'onAddMovieSuccess',
+    value: function onAddMovieSuccess() {
+      console.log('Added movie!');
+    }
+  }, {
+    key: 'onAddMovieFail',
+    value: function onAddMovieFail(err) {
+      console.log('Failed to add movie', err);
+    }
+  }, {
+    key: 'onHandleNameChange',
+    value: function onHandleNameChange(e) {
+      this.name = e.target.value;
+      this.nameValidationState = '';
+      this.helpBlock = '';
+    }
+  }, {
+    key: 'onHandleDescriptionChange',
+    value: function onHandleDescriptionChange(e) {
+      this.description = e.target.value;
+      this.genresValidationState = '';
+      this.helpBlock = '';
+    }
+  }, {
+    key: 'onHandleGenresChange',
+    value: function onHandleGenresChange(e) {
+      var genreValue = e.target.value;
+      if (this.genres.indexOf(genreValue) === -1) {
+        this.genres = _Helpers2.default.appendToArray(genreValue, this.genres);
+      } else {
+        this.genres = _Helpers2.default.removeFromArray(genreValue, this.genres);
+      }
+      this.genresValidationState = '';
+      this.helpBlock = '';
+    }
+  }, {
+    key: 'onNameValidationFail',
+    value: function onNameValidationFail() {
+      this.nameValidationState = 'has-error';
+      this.helpBlock = 'Enter movie name';
+    }
+  }, {
+    key: 'onGenresValidationFail',
+    value: function onGenresValidationFail() {
+      this.genresValidationState = 'has-error';
+      this.helpBlock = 'Select at least one movie genre';
+    }
+  }]);
+
+  return MovieAddStore;
+}();
+
+exports.default = _alt2.default.createStore(MovieAddStore);
+
+},{"../actions/HomeActions":34,"../alt":38,"../utilities/Helpers":54}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4588,7 +4694,7 @@ var NavbarStore = function () {
 
 exports.default = _alt2.default.createStore(NavbarStore);
 
-},{"../actions/NavbarActions":35,"../alt":37}],51:[function(require,module,exports){
+},{"../actions/NavbarActions":36,"../alt":38}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4640,7 +4746,7 @@ var UserStore = function () {
 
 exports.default = _alt2.default.createStore(UserStore);
 
-},{"../actions/UserActions":36,"../alt":37}],52:[function(require,module,exports){
+},{"../actions/UserActions":37,"../alt":38}],54:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4685,6 +4791,6 @@ var Helpers = function () {
 
 exports.default = Helpers;
 
-},{}]},{},[46])
+},{}]},{},[47])
 
 //# sourceMappingURL=bundle.js.map
