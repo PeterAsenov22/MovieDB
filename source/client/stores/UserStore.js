@@ -6,10 +6,14 @@ class UserStore {
     this.bindActions(UserActions)
 
     this.loggedInUserId = ''
+    this.username = ''
+    this.roles = []
   }
 
   onLoginUserSuccess (user) {
     this.loggedInUserId = user._id
+    this.username = user.username
+    this.roles = user.roles
   }
 
   onLoginUserFail () {
@@ -18,6 +22,8 @@ class UserStore {
 
   onLogoutUserSuccess () {
     this.loggedInUserId = ''
+    this.username = ''
+    this.roles = []
   }
 }
 
