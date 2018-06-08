@@ -30,7 +30,7 @@ class Footer extends Component {
   render () {
     let mostRecentMovies = this.state.mostRecentMovies.map(movie => {
       return (
-        <li key={movie.id}>
+        <li key={movie._id}>
           <Link to={`/...`}>{movie.name}</Link>
         </li>
       )

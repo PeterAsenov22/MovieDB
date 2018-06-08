@@ -27,7 +27,7 @@ class Navbar extends Component {
   }
 
   render () {
-    let navbarUserMenu = <NavbarUserMenu userData={this.props.userData} />
+    let navbarUserMenu = <NavbarUserMenu />
     return (
       <nav className='navbar navbar-default navbar-static-top'>
         <div className='navbar-header'>

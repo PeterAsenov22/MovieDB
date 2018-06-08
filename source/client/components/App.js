@@ -26,12 +26,9 @@ export default class App extends React.Component {
   }
 
   render () {
-    let userData = {
-      loggedInUserId: this.state.loggedInUserId
-    }
     return (
       <div>
-        <Navbar history={this.props.history} userData={userData} />
+        <Navbar />
         { this.props.children }
         <Footer />
       </div>

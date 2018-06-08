@@ -3158,7 +3158,7 @@ var MovieAddActions = function () {
       };
 
       $.ajax(request).done(function () {
-        return _this.addMovieSuccess();
+        _this.addMovieSuccess();
       }).fail(function (err) {
         return _this.addMovieFail(err);
       });
@@ -3231,8 +3231,8 @@ var UserActions = function () {
         contentType: 'application/json'
       };
 
-      $.ajax(request).done(function (userId) {
-        _this.loginUserSuccess(userId);
+      $.ajax(request).done(function (user) {
+        _this.loginUserSuccess(user);
       }).fail(function (err) {
         _this.loginUserFail(err);
       });
@@ -3347,13 +3347,10 @@ var App = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var userData = {
-        loggedInUserId: this.state.loggedInUserId
-      };
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_Navbar2.default, { history: this.props.history, userData: userData }),
+        _react2.default.createElement(_Navbar2.default, null),
         this.props.children,
         _react2.default.createElement(_Footer2.default, null)
       );
@@ -3437,7 +3434,7 @@ var Footer = function (_Component) {
       var mostRecentMovies = this.state.mostRecentMovies.map(function (movie) {
         return _react2.default.createElement(
           'li',
-          { key: movie.id },
+          { key: movie._id },
           _react2.default.createElement(
             _reactRouter.Link,
             { to: '/...' },
@@ -3967,7 +3964,7 @@ var Navbar = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var navbarUserMenu = _react2.default.createElement(_NavbarUserMenu2.default, { userData: this.props.userData });
+      var navbarUserMenu = _react2.default.createElement(_NavbarUserMenu2.default, null);
       return _react2.default.createElement(
         'nav',
         { className: 'navbar navbar-default navbar-static-top' },
@@ -4057,6 +4054,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _UserStore = require('../stores/UserStore');
+
+var _UserStore2 = _interopRequireDefault(_UserStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4073,38 +4074,26 @@ var UserProfile = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (UserProfile.__proto__ || Object.getPrototypeOf(UserProfile)).call(this, props));
 
-    _this.state = {
-      username: '',
-      roles: [],
-      information: '',
-      votes: '',
-      reviews: '',
-      message: ''
-    };
+    _this.state = _UserStore2.default.getState();
+
+    _this.onChange = _this.onChange.bind(_this);
     return _this;
   }
 
   _createClass(UserProfile, [{
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
-      var request = {
-        url: '/api/user/' + this.props.params.userId,
-        method: 'get'
-      };
-
-      $.ajax(request).done(function (user) {
-        _this2.setState({
-          username: user.username,
-          roles: user.roles,
-          votes: user.votes,
-          information: user.information,
-          reviews: user.reviews
-        });
-      }).fail(function (err) {
-        _this2.setState({ message: err.responseJSON.message });
-      });
+      _UserStore2.default.listen(this.onChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _UserStore2.default.unlisten(this.onChange);
     }
   }, {
     key: 'render',
@@ -4194,7 +4183,7 @@ var UserProfile = function (_Component) {
 
 exports.default = UserProfile;
 
-},{"react":"react"}],45:[function(require,module,exports){
+},{"../stores/UserStore":53,"react":"react"}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4220,21 +4209,20 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MovieCard = function (_Component) {
   _inherits(MovieCard, _Component);
 
-  function MovieCard(props) {
+  function MovieCard() {
     _classCallCheck(this, MovieCard);
 
-    var _this = _possibleConstructorReturn(this, (MovieCard.__proto__ || Object.getPrototypeOf(MovieCard)).call(this, props));
-
-    _this.state = {
-      movieScore: _this.props.movie.score,
-      movieVotes: _this.props.movie.votes
-    };
-    return _this;
+    return _possibleConstructorReturn(this, (MovieCard.__proto__ || Object.getPrototypeOf(MovieCard)).apply(this, arguments));
   }
 
   _createClass(MovieCard, [{
     key: 'render',
     value: function render() {
+      var posterNode = void 0;
+      if (this.props.movie.moviePosterUrl) {
+        posterNode = _react2.default.createElement('img', { className: 'media-object', src: this.props.movie.moviePosterUrl });
+      }
+
       return _react2.default.createElement(
         'div',
         { className: 'animated fade-in' },
@@ -4245,6 +4233,11 @@ var MovieCard = function (_Component) {
             'span',
             { className: 'position pull-left' },
             this.props.index + 1
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'pull-left thumb-lg' },
+            posterNode
           ),
           _react2.default.createElement(
             'div',
@@ -4302,6 +4295,14 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
+var _UserActions = require('../../actions/UserActions');
+
+var _UserActions2 = _interopRequireDefault(_UserActions);
+
+var _UserStore = require('../../stores/UserStore');
+
+var _UserStore2 = _interopRequireDefault(_UserStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4318,21 +4319,30 @@ var NavbarUserMenu = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (NavbarUserMenu.__proto__ || Object.getPrototypeOf(NavbarUserMenu)).call(this, props));
 
-    _this.state = {
-      loggedInUserId: _this.props.userData.loggedInUserId
-    };
+    _this.state = _UserStore2.default.getState();
+
+    _this.onChange = _this.onChange.bind(_this);
     return _this;
   }
 
   _createClass(NavbarUserMenu, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      this.setState({ loggedInUserId: nextProps.userData.loggedInUserId });
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _UserStore2.default.listen(this.onChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _UserStore2.default.unlisten(this.onChange);
     }
   }, {
     key: 'render',
     value: function render() {
-      var userData = this.props.userData;
       var userMenu = void 0;
 
       if (!this.state.loggedInUserId) {
@@ -4344,7 +4354,7 @@ var NavbarUserMenu = function (_Component) {
             null,
             _react2.default.createElement(
               'a',
-              { href: '#', onClick: userData.loginUser },
+              { href: '#', onClick: _UserActions2.default.loginUser },
               'Login'
             )
           ),
@@ -4376,7 +4386,7 @@ var NavbarUserMenu = function (_Component) {
             null,
             _react2.default.createElement(
               'a',
-              { href: '#', onClick: userData.logoutUser },
+              { href: '#', onClick: _UserActions2.default.logoutUser },
               'Logout'
             )
           )
@@ -4396,7 +4406,7 @@ var NavbarUserMenu = function (_Component) {
 
 exports.default = NavbarUserMenu;
 
-},{"react":"react","react-router":"react-router"}],47:[function(require,module,exports){
+},{"../../actions/UserActions":37,"../../stores/UserStore":53,"react":"react","react-router":"react-router"}],47:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -4570,9 +4580,9 @@ var _alt = require('../alt');
 
 var _alt2 = _interopRequireDefault(_alt);
 
-var _HomeActions = require('../actions/HomeActions');
+var _MovieAddActions = require('../actions/MovieAddActions');
 
-var _HomeActions2 = _interopRequireDefault(_HomeActions);
+var _MovieAddActions2 = _interopRequireDefault(_MovieAddActions);
 
 var _Helpers = require('../utilities/Helpers');
 
@@ -4586,7 +4596,7 @@ var MovieAddStore = function () {
   function MovieAddStore() {
     _classCallCheck(this, MovieAddStore);
 
-    this.bindActions(_HomeActions2.default);
+    this.bindActions(_MovieAddActions2.default);
 
     this.name = '';
     this.description = '';
@@ -4601,6 +4611,13 @@ var MovieAddStore = function () {
     key: 'onAddMovieSuccess',
     value: function onAddMovieSuccess() {
       console.log('Added movie!');
+      this.name = '';
+      this.description = '';
+      this.genres = [];
+      this.genresValidationState = '';
+      this.nameValidationState = '';
+      this.moviePosterUrl = '';
+      this.helpBlock = '';
     }
   }, {
     key: 'onAddMovieFail',
@@ -4652,7 +4669,7 @@ var MovieAddStore = function () {
 
 exports.default = _alt2.default.createStore(MovieAddStore);
 
-},{"../actions/HomeActions":34,"../alt":38,"../utilities/Helpers":54}],52:[function(require,module,exports){
+},{"../actions/MovieAddActions":35,"../alt":38,"../utilities/Helpers":54}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4722,12 +4739,16 @@ var UserStore = function () {
     this.bindActions(_UserActions2.default);
 
     this.loggedInUserId = '';
+    this.username = '';
+    this.roles = [];
   }
 
   _createClass(UserStore, [{
     key: 'onLoginUserSuccess',
     value: function onLoginUserSuccess(user) {
       this.loggedInUserId = user._id;
+      this.username = user.username;
+      this.roles = user.roles;
     }
   }, {
     key: 'onLoginUserFail',
@@ -4738,6 +4759,8 @@ var UserStore = function () {
     key: 'onLogoutUserSuccess',
     value: function onLogoutUserSuccess() {
       this.loggedInUserId = '';
+      this.username = '';
+      this.roles = [];
     }
   }]);
 

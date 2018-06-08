@@ -22,7 +22,9 @@ class MovieAddActions {
     }
 
     $.ajax(request)
-      .done(() => this.addMovieSuccess())
+      .done(() => {
+        this.addMovieSuccess()
+      })
       .fail((err) => this.addMovieFail(err))
 
     return true

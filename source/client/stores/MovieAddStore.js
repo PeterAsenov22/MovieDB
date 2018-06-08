@@ -1,10 +1,10 @@
 import alt from '../alt'
-import HomeActions from '../actions/HomeActions'
+import MovieAddActions from '../actions/MovieAddActions'
 import Helpers from '../utilities/Helpers'
 
 class MovieAddStore {
   constructor () {
-    this.bindActions(HomeActions)
+    this.bindActions(MovieAddActions)
 
     this.name = ''
     this.description = ''
@@ -17,6 +17,13 @@ class MovieAddStore {
 
   onAddMovieSuccess () {
     console.log('Added movie!')
+    this.name = ''
+    this.description = ''
+    this.genres = []
+    this.genresValidationState = ''
+    this.nameValidationState = ''
+    this.moviePosterUrl = ''
+    this.helpBlock = ''
   }
 
   onAddMovieFail (err) {
