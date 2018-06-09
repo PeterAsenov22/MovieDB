@@ -1,5 +1,8 @@
 import React, {Component} from 'react'
 import UserStore from '../stores/UserStore'
+import UserInfo from '../components/sub-components/UserInfo'
+import UserRatedMovies from '../components/sub-components/UserRatedMovies'
+import UserReviews from '../components/sub-components/UserReviews'
 
 class UserProfile extends Component {
   constructor (props) {
@@ -33,31 +36,9 @@ class UserProfile extends Component {
 
     return (
       <div>
-        <div className='container profile-container'>
-          <div className='profile-img'>
-            {/* <img src='/public/images/user-default.png'/> */}
-          </div>
-          <div className='profile-info clearfix'>
-            <h2><strong>{this.state.name}</strong></h2>
-            <h4 className='lead'>Roles:</h4>
-            {nodes.roles}
-            <p>{this.state.information}</p>
-          </div>
-        </div>
-        <div className='container profile-container'>
-          <div className='profile-stats clearfix'>
-            <ul>
-              <li>
-                <span className='stats-number'>{this.state.votes}</span>Votes
-              </li>
-            </ul>
-          </div>
-          <div className='pull-right btn-group'>
-            <a className='btn btn-primary'>
-              {this.state.showRatedMovies ? 'Hide' : 'Rated movies'}
-            </a>
-          </div>
-        </div>
+        <UserInfo username={this.state.name} roles={this.state.roles} />
+        <UserRatedMovies votes={this.state.votes} />
+        <UserReviews reviews={this.state.reviews} />
       </div>
     )
   }
