@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
-import Helpers from '../../utilities/Helpers';
+import MovieCardInfo from './MovieCardInfo'
+import MovieCardPoster from './MovieCardPoster'
+import MovieCommentsPanel from './MovieCommentsPanel'
+import MovieVotePanel from './MovieVotePanel'
 
 class MovieCard extends Component {
   constructor (props) {
@@ -27,38 +30,28 @@ class MovieCard extends Component {
   }
 
   render () {
-    let nodes = Helpers.nodesMovieCard(
-      this.state,
-      this.props,
-      this.toggleCommentsPanel.bind(this),
-      this.toggleVotePanel.bind(this)
-    )
-
     return (
       <div className='animated fade-in'>
         <div className='media movie'>
           <span className='position pull-left'>{this.props.index + 1}</span>
-          <div className='pull-left thumb-lg'>
-            {nodes.poster}
+          <MovieCardPoster moviePosterUrl={this.props.movie.moviePosterUrl} />
+          <MovieCardInfo movie={this.props.movie} />
+          <div className='pull-right btn-group'>
+            <a className='btn btn-primary'
+              onClick={this.toggleCommentsPanel.bind(this)}>
+              {this.state.showCommentsPanel ? 'Hide' : 'Comments'}
+            </a>
+            <a className='btn btn-primary'
+              onClick={this.toggleVotePanel.bind(this)}>
+              {this.state.showVotePanel ? 'Hide' : 'Vote'}
+            </a>
+            <Link to={`/movie/${this.props.movie._id}/review/add`} className='btn btn-warning'>
+              Write review
+            </Link>
           </div>
-          <div className='media-body'>
-            <h4 className='media-heading'>
-              <Link to={`/movie/${this.props.movie._id}/${this.props.movie.name}`}>
-                {this.props.movie.name}
-              </Link>
-            </h4>
-            <small>Genres: {nodes.genres}</small>
-            <br />
-            <p>{this.props.movie.description}</p>
-            <span className='votes'>Votes:
-              { /* <strong>{this.state.movieVotes}</strong> */ }
-            </span>
-            {/* {nodes.rating} */}
-          </div>
-          {nodes.panelToggles}
         </div>
-        {nodes.votePanel}
-        {nodes.commentsPanel}
+        { this.state.showVotePanel ? <MovieVotePanel movieId={this.props.movie._id} /> : null }
+        { this.state.showCommentsPanel ? <MovieCommentsPanel movieId={this.props.movie._id} /> : null }
         <div id='clear' />
       </div>
     )
