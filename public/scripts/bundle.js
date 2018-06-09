@@ -3052,6 +3052,10 @@ var _alt = require('../alt');
 
 var _alt2 = _interopRequireDefault(_alt);
 
+var _RequesterTMDB = require('../utilities/RequesterTMDB');
+
+var _RequesterTMDB2 = _interopRequireDefault(_RequesterTMDB);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3074,7 +3078,7 @@ var HomeActions = function () {
       };
 
       $.ajax(request).done(function (data) {
-        var movies = [];
+        var tmdbPromises = [];
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -3083,14 +3087,7 @@ var HomeActions = function () {
           for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var movie = _step.value;
 
-            var movieData = {
-              _id: movie._id,
-              name: movie.name,
-              description: movie.description,
-              genres: movie.genres
-            };
-
-            movies.push(movieData);
+            tmdbPromises.push(_RequesterTMDB2.default.getMoviePoster(movie.name));
           }
         } catch (err) {
           _didIteratorError = true;
@@ -3107,7 +3104,22 @@ var HomeActions = function () {
           }
         }
 
-        _this.getTopTenMoviesSuccess(movies);
+        Promise.all(tmdbPromises).then(function (promises) {
+          var movies = [];
+          for (var i = 0; i < data.length; i++) {
+            var movie = data[i];
+            var movieData = {
+              _id: movie._id,
+              name: movie.name,
+              description: movie.description,
+              genres: movie.genres,
+              moviePosterUrl: promises[i].posterUrl
+            };
+            movies.push(movieData);
+          }
+
+          _this.getTopTenMoviesSuccess(movies);
+        });
       }).fail(function (error) {
         return _this.getTopTenMoviesFail(error);
       });
@@ -3121,7 +3133,7 @@ var HomeActions = function () {
 
 exports.default = _alt2.default.createActions(HomeActions);
 
-},{"../alt":38}],35:[function(require,module,exports){
+},{"../alt":38,"../utilities/RequesterTMDB":55}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4813,6 +4825,62 @@ var Helpers = function () {
 }();
 
 exports.default = Helpers;
+
+},{}],55:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var API_KEY = '71aabd79c7082bcacabc96877ac7238b';
+var SEARCH_BASE_URL = 'https://api.themoviedb.org/3/search/movie';
+var POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+var UNVERIFIED_MOVIE_POSTER_URL = '/images/movie-unverified.png';
+var MISSING_DATA_POSTER_URL = '/images/movie-missing-data.jpg';
+
+var RequesterTMDB = function () {
+  function RequesterTMDB() {
+    _classCallCheck(this, RequesterTMDB);
+  }
+
+  _createClass(RequesterTMDB, null, [{
+    key: 'getMoviePoster',
+    value: function getMoviePoster(movieName) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          method: 'get',
+          url: SEARCH_BASE_URL + '?api_key=' + API_KEY + '&query=' + movieName
+        };
+        $.ajax(request).done(function (tmdbResponse) {
+          console.log('TMDB Response', tmdbResponse);
+          if (tmdbResponse.total_results === 0) {
+            resolve({ posterUrl: UNVERIFIED_MOVIE_POSTER_URL });
+            return;
+          }
+
+          var posterPath = tmdbResponse.results[0].poster_path;
+          if (posterPath === null) {
+            resolve({ posterUrl: MISSING_DATA_POSTER_URL });
+            return;
+          }
+
+          resolve({ posterUrl: POSTER_BASE_URL + '/' + posterPath });
+        }).fail(function (err) {
+          reject(err);
+        });
+      });
+    }
+  }]);
+
+  return RequesterTMDB;
+}();
+
+exports.default = RequesterTMDB;
 
 },{}]},{},[47])
 
