@@ -1,21 +1,45 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
+import Helpers from '../../utilities/Helpers';
 
 class MovieCard extends Component {
-  render () {
-    let posterNode
-    if (this.props.movie.moviePosterUrl) {
-      posterNode = (
-        <img className='media-object' src={this.props.movie.moviePosterUrl} />
-      )
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      showVotePanel: false,
+      showCommentsPanel: false
     }
+  }
+
+  toggleCommentsPanel () {
+    this.setState(prevState => ({
+      showCommentsPanel: !prevState.showCommentsPanel,
+      showVotePanel: false
+    }))
+  }
+
+  toggleVotePanel () {
+    this.setState(prevState => ({
+      showVotePanel: !prevState.showVotePanel,
+      showCommentsPanel: false
+    }))
+  }
+
+  render () {
+    let nodes = Helpers.nodesMovieCard(
+      this.state,
+      this.props,
+      this.toggleCommentsPanel.bind(this),
+      this.toggleVotePanel.bind(this)
+    )
 
     return (
       <div className='animated fade-in'>
         <div className='media movie'>
           <span className='position pull-left'>{this.props.index + 1}</span>
           <div className='pull-left thumb-lg'>
-            {posterNode}
+            {nodes.poster}
           </div>
           <div className='media-body'>
             <h4 className='media-heading'>
@@ -23,7 +47,7 @@ class MovieCard extends Component {
                 {this.props.movie.name}
               </Link>
             </h4>
-            <small>Genres: {this.props.movie.genres.join(' ')}</small>
+            <small>Genres: {nodes.genres}</small>
             <br />
             <p>{this.props.movie.description}</p>
             <span className='votes'>Votes:
@@ -31,10 +55,10 @@ class MovieCard extends Component {
             </span>
             {/* {nodes.rating} */}
           </div>
-          {/* {nodes.panelToggles} */}
+          {nodes.panelToggles}
         </div>
-        {/* {nodes.votePanel} */}
-        {/* {nodes.commentsPanel} */}
+        {nodes.votePanel}
+        {nodes.commentsPanel}
         <div id='clear' />
       </div>
     )
