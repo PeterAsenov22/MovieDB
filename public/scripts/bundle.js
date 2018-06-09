@@ -3111,7 +3111,7 @@ var HomeActions = function () {
             var movieData = {
               _id: movie._id,
               name: movie.name,
-              description: movie.description,
+              description: movie.description || promises[i].overview,
               genres: movie.genres,
               moviePosterUrl: promises[i].posterUrl
             };
@@ -3804,7 +3804,7 @@ var AddMovie = function (_React$Component) {
                       { className: 'checkbox checkbox-inline' },
                       _react2.default.createElement('input', { type: 'checkbox', name: 'genres', id: 'action', value: 'Action',
                         checked: this.state.genres.indexOf('Action') !== -1,
-                        onClick: _MovieAddActions2.default.handleGenresChange }),
+                        onChange: _MovieAddActions2.default.handleGenresChange }),
                       _react2.default.createElement(
                         'label',
                         { htmlFor: 'action' },
@@ -5375,29 +5375,13 @@ var UserStore = function () {
 exports.default = _alt2.default.createStore(UserStore);
 
 },{"../actions/UserActions":37,"../alt":38}],63:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _MovieCommentsPanel = require('../components/sub-components/MovieCommentsPanel');
-
-var _MovieCommentsPanel2 = _interopRequireDefault(_MovieCommentsPanel);
-
-var _MovieVotePanel = require('../components/sub-components/MovieVotePanel');
-
-var _MovieVotePanel2 = _interopRequireDefault(_MovieVotePanel);
-
-var _reactRouter = require('react-router');
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5407,19 +5391,19 @@ var Helpers = function () {
   }
 
   _createClass(Helpers, null, [{
-    key: 'appendToArray',
+    key: "appendToArray",
     value: function appendToArray(value, array) {
       array.push(value);
       return array;
     }
   }, {
-    key: 'prependToArray',
+    key: "prependToArray",
     value: function prependToArray(value, array) {
       array.unshift(value);
       return array;
     }
   }, {
-    key: 'removeFromArray',
+    key: "removeFromArray",
     value: function removeFromArray(value, array) {
       var index = array.indexOf(value);
       if (index !== -1) {
@@ -5428,41 +5412,6 @@ var Helpers = function () {
 
       return array;
     }
-  }, {
-    key: 'nodesMovieCard',
-    value: function nodesMovieCard(state, props, toggleCommentsPanel, toggleVotePanel) {
-      var nodes = {};
-      if (state.showCommentsPanel) {
-        nodes.commentsPanel = _react2.default.createElement(_MovieCommentsPanel2.default, { movieId: props.movie._id });
-      }
-      if (state.showVotePanel) {
-        nodes.votePanel = _react2.default.createElement(_MovieVotePanel2.default, { movieId: props.movie._id });
-      }
-
-      nodes.panelToggles = _react2.default.createElement(
-        'div',
-        { className: 'pull-right btn-group' },
-        _react2.default.createElement(
-          'a',
-          { className: 'btn btn-primary',
-            onClick: toggleCommentsPanel },
-          state.showCommentsPanel ? 'Hide' : 'Comments'
-        ),
-        _react2.default.createElement(
-          'a',
-          { className: 'btn btn-primary',
-            onClick: toggleVotePanel },
-          state.showVotePanel ? 'Hide' : 'Vote'
-        ),
-        _react2.default.createElement(
-          _reactRouter.Link,
-          { to: '/movie/' + props.movie._id + '/review/add', className: 'btn btn-warning' },
-          'Write review'
-        )
-      );
-
-      return nodes;
-    }
   }]);
 
   return Helpers;
@@ -5470,7 +5419,7 @@ var Helpers = function () {
 
 exports.default = Helpers;
 
-},{"../components/sub-components/MovieCommentsPanel":48,"../components/sub-components/MovieVotePanel":49,"react":"react","react-router":"react-router"}],64:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5513,7 +5462,10 @@ var RequesterTMDB = function () {
             return;
           }
 
-          resolve({ posterUrl: POSTER_BASE_URL + '/' + posterPath });
+          resolve({
+            posterUrl: POSTER_BASE_URL + '/' + posterPath,
+            overview: tmdbResponse.results[0].overview
+          });
         }).fail(function (err) {
           reject(err);
         });

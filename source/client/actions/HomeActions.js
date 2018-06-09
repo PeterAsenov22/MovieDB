@@ -30,7 +30,7 @@ class HomeActions {
               let movieData = {
                 _id: movie._id,
                 name: movie.name,
-                description: movie.description,
+                description: movie.description || promises[i].overview,
                 genres: movie.genres,
                 moviePosterUrl: promises[i].posterUrl
               }

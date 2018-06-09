@@ -25,7 +25,10 @@ export default class RequesterTMDB {
             return
           }
 
-          resolve({posterUrl: `${POSTER_BASE_URL}/${posterPath}`})
+          resolve({
+            posterUrl: `${POSTER_BASE_URL}/${posterPath}`,
+            overview: tmdbResponse.results[0].overview
+          })
         })
         .fail(err => {
           reject(err)

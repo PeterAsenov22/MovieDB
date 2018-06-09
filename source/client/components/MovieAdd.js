@@ -72,7 +72,7 @@ class AddMovie extends React.Component {
                     <div className='checkbox checkbox-inline'>
                       <input type='checkbox' name='genres' id='action' value='Action'
                         checked={this.state.genres.indexOf('Action') !== -1}
-                        onClick={MovieAddActions.handleGenresChange} />
+                        onChange={MovieAddActions.handleGenresChange} />
                       <label htmlFor='action'>Action</label>
                     </div>
                     <div className='checkbox checkbox-inline'>
