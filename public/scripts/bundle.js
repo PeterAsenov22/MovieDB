@@ -3687,13 +3687,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var AddMovie = function (_React$Component) {
-  _inherits(AddMovie, _React$Component);
+var MovieAdd = function (_React$Component) {
+  _inherits(MovieAdd, _React$Component);
 
-  function AddMovie(props) {
-    _classCallCheck(this, AddMovie);
+  function MovieAdd(props) {
+    _classCallCheck(this, MovieAdd);
 
-    var _this = _possibleConstructorReturn(this, (AddMovie.__proto__ || Object.getPrototypeOf(AddMovie)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (MovieAdd.__proto__ || Object.getPrototypeOf(MovieAdd)).call(this, props));
 
     _this.state = _MovieAddStore2.default.getState();
 
@@ -3701,7 +3701,7 @@ var AddMovie = function (_React$Component) {
     return _this;
   }
 
-  _createClass(AddMovie, [{
+  _createClass(MovieAdd, [{
     key: 'onChange',
     value: function onChange(state) {
       this.setState(state);
@@ -3898,10 +3898,10 @@ var AddMovie = function (_React$Component) {
     }
   }]);
 
-  return AddMovie;
+  return MovieAdd;
 }(_react2.default.Component);
 
-exports.default = AddMovie;
+exports.default = MovieAdd;
 
 },{"../actions/MovieAddActions":35,"../stores/MovieAddStore":60,"react":"react"}],43:[function(require,module,exports){
 'use strict';
@@ -3976,7 +3976,6 @@ var Navbar = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var navbarUserMenu = _react2.default.createElement(_NavbarUserMenu2.default, null);
       return _react2.default.createElement(
         'nav',
         { className: 'navbar navbar-default navbar-static-top' },
@@ -4042,7 +4041,7 @@ var Navbar = function (_Component) {
               )
             )
           ),
-          navbarUserMenu
+          _react2.default.createElement(_NavbarUserMenu2.default, null)
         )
       );
     }
@@ -4122,19 +4121,6 @@ var UserProfile = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var nodes = {};
-      nodes.roles = this.state.roles.map(function (role, index) {
-        return _react2.default.createElement(
-          'h4',
-          { key: index, className: 'lead' },
-          _react2.default.createElement(
-            'strong',
-            null,
-            role
-          )
-        );
-      });
-
       return _react2.default.createElement(
         'div',
         null,
@@ -4945,13 +4931,12 @@ var UserReviews = function (_Component) {
           { className: 'pull-right btn-group' },
           _react2.default.createElement(
             'a',
-            { className: 'btn btn-primary', onClick: this.toggleReviews.bind(this) },
-            ' ',
-            this.state.showReviewsPanel ? 'Hide' : 'Reviews',
-            ' '
+            { className: 'btn btn-primary',
+              onClick: this.toggleReviews.bind(this) },
+            this.state.showReviewsPanel ? 'Hide' : 'Reviews'
           )
         ),
-        this.state.showReviewsPanel ? _react2.default.createElement(_UserReviewsPanel2.default, { reviews: this.props.reviews }) : null
+        this.state.showReviewsPanel ? _react2.default.createElement(_UserReviewsPanel2.default, null) : null
       );
     }
   }]);

@@ -2,7 +2,7 @@ import React from 'react'
 import MovieAddActions from '../actions/MovieAddActions'
 import MovieAddStore from '../stores/MovieAddStore'
 
-class AddMovie extends React.Component {
+class MovieAdd extends React.Component {
   constructor (props) {
     super(props)
     this.state = MovieAddStore.getState()
@@ -123,4 +123,4 @@ class AddMovie extends React.Component {
   }
 }
 
-export default AddMovie
+export default MovieAdd

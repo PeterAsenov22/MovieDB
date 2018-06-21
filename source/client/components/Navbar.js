@@ -27,7 +27,6 @@ class Navbar extends Component {
   }
 
   render () {
-    let navbarUserMenu = <NavbarUserMenu />
     return (
       <nav className='navbar navbar-default navbar-static-top'>
         <div className='navbar-header'>
@@ -64,7 +63,7 @@ class Navbar extends Component {
               <Link to='/movie/add'>Add Movie</Link>
             </li>
           </ul>
-          {navbarUserMenu}
+          <NavbarUserMenu />
         </div>
       </nav>
     )

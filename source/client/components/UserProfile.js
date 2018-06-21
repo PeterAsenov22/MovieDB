@@ -25,15 +25,6 @@ class UserProfile extends Component {
   }
 
   render () {
-    let nodes = {}
-    nodes.roles = this.state.roles.map((role, index) => {
-      return (
-        <h4 key={index} className='lead'>
-          <strong>{role}</strong>
-        </h4>
-      )
-    })
-
     return (
       <div>
         <UserInfo username={this.state.name} roles={this.state.roles} />
