@@ -3133,7 +3133,7 @@ var HomeActions = function () {
 
 exports.default = _alt2.default.createActions(HomeActions);
 
-},{"../alt":38,"../utilities/RequesterTMDB":64}],35:[function(require,module,exports){
+},{"../alt":38,"../utilities/RequesterTMDB":65}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3374,7 +3374,7 @@ var App = function (_React$Component) {
 
 exports.default = App;
 
-},{"../actions/UserActions":37,"../stores/UserStore":62,"./Footer":40,"./Navbar":43,"react":"react"}],40:[function(require,module,exports){
+},{"../actions/UserActions":37,"../stores/UserStore":63,"./Footer":40,"./Navbar":43,"react":"react"}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3558,7 +3558,7 @@ var Footer = function (_Component) {
 
 exports.default = Footer;
 
-},{"../actions/FooterActions":33,"../stores/FooterStore":58,"react":"react","react-router":"react-router"}],41:[function(require,module,exports){
+},{"../actions/FooterActions":33,"../stores/FooterStore":59,"react":"react","react-router":"react-router"}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3658,7 +3658,7 @@ var Home = function (_Component) {
 
 exports.default = Home;
 
-},{"../actions/HomeActions":34,"../stores/HomeStore":59,"./sub-components/MovieCard":45,"react":"react"}],42:[function(require,module,exports){
+},{"../actions/HomeActions":34,"../stores/HomeStore":60,"./sub-components/MovieCard":45,"react":"react"}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3903,7 +3903,7 @@ var MovieAdd = function (_React$Component) {
 
 exports.default = MovieAdd;
 
-},{"../actions/MovieAddActions":35,"../stores/MovieAddStore":60,"react":"react"}],43:[function(require,module,exports){
+},{"../actions/MovieAddActions":35,"../stores/MovieAddStore":61,"react":"react"}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4052,7 +4052,7 @@ var Navbar = function (_Component) {
 
 exports.default = Navbar;
 
-},{"../actions/NavbarActions":36,"../stores/NavbarStore":61,"./sub-components/NavbarUserMenu":50,"react":"react","react-router":"react-router"}],44:[function(require,module,exports){
+},{"../actions/NavbarActions":36,"../stores/NavbarStore":62,"./sub-components/NavbarUserMenu":51,"react":"react","react-router":"react-router"}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4136,7 +4136,7 @@ var UserProfile = function (_Component) {
 
 exports.default = UserProfile;
 
-},{"../components/sub-components/UserInfo":51,"../components/sub-components/UserRatedMovies":52,"../components/sub-components/UserReviews":54,"../stores/UserStore":62,"react":"react"}],45:[function(require,module,exports){
+},{"../components/sub-components/UserInfo":52,"../components/sub-components/UserRatedMovies":53,"../components/sub-components/UserReviews":55,"../stores/UserStore":63,"react":"react"}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4148,8 +4148,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _reactRouter = require('react-router');
 
 var _MovieCardInfo = require('./MovieCardInfo');
 
@@ -4166,6 +4164,10 @@ var _MovieCommentsPanel2 = _interopRequireDefault(_MovieCommentsPanel);
 var _MovieVotePanel = require('./MovieVotePanel');
 
 var _MovieVotePanel2 = _interopRequireDefault(_MovieVotePanel);
+
+var _MoviePanelToggles = require('./MoviePanelToggles');
+
+var _MoviePanelToggles2 = _interopRequireDefault(_MoviePanelToggles);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4226,27 +4228,12 @@ var MovieCard = function (_Component) {
           ),
           _react2.default.createElement(_MovieCardPoster2.default, { moviePosterUrl: this.props.movie.moviePosterUrl }),
           _react2.default.createElement(_MovieCardInfo2.default, { movie: this.props.movie }),
-          _react2.default.createElement(
-            'div',
-            { className: 'pull-right btn-group' },
-            _react2.default.createElement(
-              'a',
-              { className: 'btn btn-primary',
-                onClick: this.toggleCommentsPanel.bind(this) },
-              this.state.showCommentsPanel ? 'Hide' : 'Comments'
-            ),
-            _react2.default.createElement(
-              'a',
-              { className: 'btn btn-primary',
-                onClick: this.toggleVotePanel.bind(this) },
-              this.state.showVotePanel ? 'Hide' : 'Vote'
-            ),
-            _react2.default.createElement(
-              _reactRouter.Link,
-              { to: '/movie/' + this.props.movie._id + '/review/add', className: 'btn btn-warning' },
-              'Write review'
-            )
-          )
+          _react2.default.createElement(_MoviePanelToggles2.default, {
+            toggleCommentsPanel: this.toggleCommentsPanel.bind(this),
+            toggleVotePanel: this.toggleVotePanel.bind(this),
+            showCommentsPanel: this.state.showCommentsPanel,
+            showVotePanel: this.state.showVotePanel,
+            movieId: this.props.movie._id })
         ),
         this.state.showVotePanel ? _react2.default.createElement(_MovieVotePanel2.default, { movieId: this.props.movie._id }) : null,
         this.state.showCommentsPanel ? _react2.default.createElement(_MovieCommentsPanel2.default, { movieId: this.props.movie._id }) : null,
@@ -4260,7 +4247,7 @@ var MovieCard = function (_Component) {
 
 exports.default = MovieCard;
 
-},{"./MovieCardInfo":46,"./MovieCardPoster":47,"./MovieCommentsPanel":48,"./MovieVotePanel":49,"react":"react","react-router":"react-router"}],46:[function(require,module,exports){
+},{"./MovieCardInfo":46,"./MovieCardPoster":47,"./MovieCommentsPanel":48,"./MoviePanelToggles":49,"./MovieVotePanel":50,"react":"react"}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4457,6 +4444,70 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouter = require('react-router');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MoviePanelToggles = function (_Component) {
+  _inherits(MoviePanelToggles, _Component);
+
+  function MoviePanelToggles() {
+    _classCallCheck(this, MoviePanelToggles);
+
+    return _possibleConstructorReturn(this, (MoviePanelToggles.__proto__ || Object.getPrototypeOf(MoviePanelToggles)).apply(this, arguments));
+  }
+
+  _createClass(MoviePanelToggles, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'pull-right btn-group' },
+        _react2.default.createElement(
+          'a',
+          { className: 'btn btn-primary',
+            onClick: this.props.toggleCommentsPanel },
+          this.props.showCommentsPanel ? 'Hide' : 'Comments'
+        ),
+        _react2.default.createElement(
+          'a',
+          { className: 'btn btn-primary',
+            onClick: this.props.toggleVotePanel },
+          this.props.showVotePanel ? 'Hide' : 'Vote'
+        ),
+        _react2.default.createElement(
+          _reactRouter.Link,
+          { to: '/movie/' + this.props.movieId + '/review/add', className: 'btn btn-warning' },
+          'Write review'
+        )
+      );
+    }
+  }]);
+
+  return MoviePanelToggles;
+}(_react.Component);
+
+exports.default = MoviePanelToggles;
+
+},{"react":"react","react-router":"react-router"}],50:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4498,7 +4549,7 @@ var MovieVotePanel = function (_Component) {
 
 exports.default = MovieVotePanel;
 
-},{"react":"react"}],50:[function(require,module,exports){
+},{"react":"react"}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4624,7 +4675,7 @@ var NavbarUserMenu = function (_Component) {
 
 exports.default = NavbarUserMenu;
 
-},{"../../actions/UserActions":37,"../../stores/UserStore":62,"react":"react","react-router":"react-router"}],51:[function(require,module,exports){
+},{"../../actions/UserActions":37,"../../stores/UserStore":63,"react":"react","react-router":"react-router"}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4713,7 +4764,7 @@ var UserInfo = function (_Component) {
 
 exports.default = UserInfo;
 
-},{"react":"react"}],52:[function(require,module,exports){
+},{"react":"react"}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4804,7 +4855,7 @@ var UserRatedMovies = function (_Component) {
 
 exports.default = UserRatedMovies;
 
-},{"../sub-components/UserRatedMoviesPanel":53,"react":"react"}],53:[function(require,module,exports){
+},{"../sub-components/UserRatedMoviesPanel":54,"react":"react"}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4854,7 +4905,7 @@ var UserRatedMoviesPanel = function (_Component) {
 
 exports.default = UserRatedMoviesPanel;
 
-},{"react":"react"}],54:[function(require,module,exports){
+},{"react":"react"}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4946,7 +4997,7 @@ var UserReviews = function (_Component) {
 
 exports.default = UserReviews;
 
-},{"../sub-components/UserReviewsPanel":55,"react":"react"}],55:[function(require,module,exports){
+},{"../sub-components/UserReviewsPanel":56,"react":"react"}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4996,7 +5047,7 @@ var UserReviewsPanel = function (_Component) {
 
 exports.default = UserReviewsPanel;
 
-},{"react":"react"}],56:[function(require,module,exports){
+},{"react":"react"}],57:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -5029,7 +5080,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _routes2.default
 ), document.getElementById('app'));
 
-},{"./routes":57,"history/lib/createBrowserHistory":20,"react":"react","react-dom":"react-dom","react-router":"react-router"}],57:[function(require,module,exports){
+},{"./routes":58,"history/lib/createBrowserHistory":20,"react":"react","react-dom":"react-dom","react-router":"react-router"}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5068,7 +5119,7 @@ exports.default = _react2.default.createElement(
   _react2.default.createElement(_reactRouter.Route, { path: '/user/profile/:userId', component: _UserProfile2.default })
 );
 
-},{"./components/App":39,"./components/Home":41,"./components/MovieAdd":42,"./components/UserProfile":44,"react":"react","react-router":"react-router"}],58:[function(require,module,exports){
+},{"./components/App":39,"./components/Home":41,"./components/MovieAdd":42,"./components/UserProfile":44,"react":"react","react-router":"react-router"}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5110,7 +5161,7 @@ var FooterStore = function () {
 
 exports.default = _alt2.default.createStore(FooterStore);
 
-},{"../actions/FooterActions":33,"../alt":38}],59:[function(require,module,exports){
+},{"../actions/FooterActions":33,"../alt":38}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5157,7 +5208,7 @@ var HomeStore = function () {
 
 exports.default = _alt2.default.createStore(HomeStore);
 
-},{"../actions/HomeActions":34,"../alt":38}],60:[function(require,module,exports){
+},{"../actions/HomeActions":34,"../alt":38}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5259,7 +5310,7 @@ var MovieAddStore = function () {
 
 exports.default = _alt2.default.createStore(MovieAddStore);
 
-},{"../actions/MovieAddActions":35,"../alt":38,"../utilities/Helpers":63}],61:[function(require,module,exports){
+},{"../actions/MovieAddActions":35,"../alt":38,"../utilities/Helpers":64}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5301,7 +5352,7 @@ var NavbarStore = function () {
 
 exports.default = _alt2.default.createStore(NavbarStore);
 
-},{"../actions/NavbarActions":36,"../alt":38}],62:[function(require,module,exports){
+},{"../actions/NavbarActions":36,"../alt":38}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5359,7 +5410,7 @@ var UserStore = function () {
 
 exports.default = _alt2.default.createStore(UserStore);
 
-},{"../actions/UserActions":37,"../alt":38}],63:[function(require,module,exports){
+},{"../actions/UserActions":37,"../alt":38}],64:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5404,7 +5455,7 @@ var Helpers = function () {
 
 exports.default = Helpers;
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5463,6 +5514,6 @@ var RequesterTMDB = function () {
 
 exports.default = RequesterTMDB;
 
-},{}]},{},[56])
+},{}]},{},[57])
 
 //# sourceMappingURL=bundle.js.map

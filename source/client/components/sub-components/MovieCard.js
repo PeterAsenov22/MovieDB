@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import MovieCardInfo from './MovieCardInfo'
 import MovieCardPoster from './MovieCardPoster'
 import MovieCommentsPanel from './MovieCommentsPanel'
 import MovieVotePanel from './MovieVotePanel'
+import MoviePanelToggles from './MoviePanelToggles'
 
 class MovieCard extends Component {
   constructor (props) {
@@ -36,19 +36,12 @@ class MovieCard extends Component {
           <span className='position pull-left'>{this.props.index + 1}</span>
           <MovieCardPoster moviePosterUrl={this.props.movie.moviePosterUrl} />
           <MovieCardInfo movie={this.props.movie} />
-          <div className='pull-right btn-group'>
-            <a className='btn btn-primary'
-              onClick={this.toggleCommentsPanel.bind(this)}>
-              {this.state.showCommentsPanel ? 'Hide' : 'Comments'}
-            </a>
-            <a className='btn btn-primary'
-              onClick={this.toggleVotePanel.bind(this)}>
-              {this.state.showVotePanel ? 'Hide' : 'Vote'}
-            </a>
-            <Link to={`/movie/${this.props.movie._id}/review/add`} className='btn btn-warning'>
-              Write review
-            </Link>
-          </div>
+          <MoviePanelToggles
+            toggleCommentsPanel={this.toggleCommentsPanel.bind(this)}
+            toggleVotePanel={this.toggleVotePanel.bind(this)}
+            showCommentsPanel={this.state.showCommentsPanel}
+            showVotePanel={this.state.showVotePanel}
+            movieId={this.props.movie._id} />
         </div>
         { this.state.showVotePanel ? <MovieVotePanel movieId={this.props.movie._id} /> : null }
         { this.state.showCommentsPanel ? <MovieCommentsPanel movieId={this.props.movie._id} /> : null }
