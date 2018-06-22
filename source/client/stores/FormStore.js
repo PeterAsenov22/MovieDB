@@ -7,7 +7,9 @@ class FormStore {
     this.bindActions(FormActions)
     this.bindListeners({
       onRegisterUserFail: UserActions.registerUserFail,
-      onRegisterUserSuccess: UserActions.registerUserSuccess
+      onRegisterUserSuccess: UserActions.registerUserSuccess,
+      onLoginUserSuccess: UserActions.loginUserSuccess,
+      onLoginUserFail: UserActions.loginUserFail
     })
 
     this.user = {
@@ -65,6 +67,29 @@ class FormStore {
     this.message = err.errmsg
   }
 
+  onLoginUserSuccess () {
+    this.formSubmitState = 'has-success'
+    this.message = 'User login successful'
+    this.usernameValidationState = ''
+    this.passwordValidationState = ''
+    this.user = {
+      username: '',
+      password: '',
+      confirmedPassword: '',
+      firstName: '',
+      lastName: '',
+      age: '',
+      gender: ''
+    }
+  }
+
+  onLoginUserFail (err) {
+    this.formSubmitState = 'has-error'
+    this.message = err.message
+    this.usernameValidationState = 'has-error'
+    this.passwordValidationState = 'has-error'
+  }
+
   onUsernameValidationFail () {
     this.usernameValidationState = 'has-error'
     this.passwordValidationState = ''
@@ -76,7 +101,7 @@ class FormStore {
     this.message = 'Enter username'
   }
 
-  onPasswordValidationFail () {
+  onPasswordValidationFail (message) {
     this.usernameValidationState = ''
     this.passwordValidationState = 'has-error'
     this.firstNameValidationState = ''
@@ -84,7 +109,7 @@ class FormStore {
     this.ageValidationState = ''
     this.genderValidationState = ''
     this.formSubmitState = ''
-    this.message = 'Invalid password, or passwords do not match'
+    this.message = message
   }
 
   onFirstNameValidationFail () {

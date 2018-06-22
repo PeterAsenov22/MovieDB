@@ -31,7 +31,7 @@ class NavbarUserMenu extends Component {
       userMenu = (
         <ul className='nav navbar-nav pull-right'>
           <li>
-            <a href='#' onClick={UserActions.loginUser}>Login</a>
+            <Link to='/user/login'>Login</Link>
           </li>
           <li>
             <Link to='/user/register'>Register</Link>

@@ -48,7 +48,7 @@ class UserRegister extends Component {
     if (!data.password ||
        !data.confirmedPassword ||
         data.password !== data.confirmedPassword) {
-      return FormActions.passwordValidationFail()
+      return FormActions.passwordValidationFail('Invalid password, or passwords do not match')
     }
 
     if (!data.firstName || data.firstName.length < 2) {

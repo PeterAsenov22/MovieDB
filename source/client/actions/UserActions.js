@@ -28,11 +28,11 @@ class UserActions {
     return true
   }
 
-  loginUser () {
+  loginUser (data) {
     let request = {
       url: '/user/login',
       method: 'post',
-      data: JSON.stringify({username: 'admin', password: 'admin'}),
+      data: JSON.stringify(data),
       contentType: 'application/json'
     }
 
@@ -41,7 +41,7 @@ class UserActions {
         this.loginUserSuccess(user)
       })
       .fail(err => {
-        this.loginUserFail(err)
+        this.loginUserFail(err.responseJSON)
       })
 
     return true
