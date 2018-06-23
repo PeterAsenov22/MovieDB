@@ -44,7 +44,9 @@ class MovieCard extends Component {
             movieId={this.props.movie._id} />
         </div>
         { this.state.showVotePanel ? <MovieVotePanel movieId={this.props.movie._id} /> : null }
-        { this.state.showCommentsPanel ? <MovieCommentsPanel movieId={this.props.movie._id} /> : null }
+        { this.state.showCommentsPanel ?
+          <MovieCommentsPanel movieId={this.props.movie._id} comments={this.props.movie.comments} />
+          : null }
         <div id='clear' />
       </div>
     )

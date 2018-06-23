@@ -1,6 +1,7 @@
 import alt from '../alt'
 import FormActions from '../actions/FormActions'
 import UserActions from '../actions/UserActions'
+import MovieActions from '../actions/MovieActions'
 
 class FormStore {
   constructor () {
@@ -9,7 +10,8 @@ class FormStore {
       onRegisterUserFail: UserActions.registerUserFail,
       onRegisterUserSuccess: UserActions.registerUserSuccess,
       onLoginUserSuccess: UserActions.loginUserSuccess,
-      onLoginUserFail: UserActions.loginUserFail
+      onLoginUserFail: UserActions.loginUserFail,
+      onAddCommentFail: MovieActions.addCommentFail
     })
 
     this.user = {
@@ -21,12 +23,15 @@ class FormStore {
       age: '',
       gender: ''
     }
+
+    this.comment = ''
     this.usernameValidationState = ''
     this.passwordValidationState = ''
     this.firstNameValidationState = ''
     this.lastNameValidationState = ''
     this.ageValidationState = ''
     this.genderValidationState = ''
+    this.commentValidationState = ''
     this.formSubmitState = ''
     this.message = ''
   }
@@ -156,8 +161,22 @@ class FormStore {
     this.message = 'Gender should be Male or Female. Select one'
   }
 
+  onCommentValidationFail () {
+    this.commentValidationState = 'has-error'
+    this.message = 'Please enter comment text'
+  }
+
+  onAddCommentFail (err) {
+    this.commentValidationState = 'has-error'
+    this.message = err.message
+  }
+
   onHandleInputChange (event) {
     this.user[event.target.name] = event.target.value
+  }
+
+  onHandleCommentChange (event) {
+    this.comment = event.target.value
   }
 
   onUnauthorizedAccessAttempt () {

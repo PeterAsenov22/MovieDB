@@ -31,6 +31,12 @@ class MovieStore {
   onGetFiveRecentMoviesFail () {
     console.log('Could not connect to DB')
   }
+
+  onAddCommentSuccess (movieId, data) {
+    let comment = data.content
+    let movie = this.topTenMovies.find(m => m._id === movieId)
+    movie.comments.unshift(comment)
+  }
 }
 
 export default alt.createStore(MovieStore)

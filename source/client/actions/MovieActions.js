@@ -9,7 +9,9 @@ class MovieActions {
       'getFiveRecentMoviesSuccess',
       'getFiveRecentMoviesFail',
       'emptyTopTenMovies',
-      'addMovieToTopTen'
+      'addMovieToTopTen',
+      'addCommentSuccess',
+      'addCommentFail'
     )
   }
 
@@ -60,6 +62,21 @@ class MovieActions {
         }
       })
       .fail(error => this.getTopTenMoviesFail(error))
+
+    return true
+  }
+
+  addComment (movieId, comment) {
+    let request = {
+      url: `/api/movies/${movieId}/comments`,
+      method: 'post',
+      contentType: 'application/json',
+      data: JSON.stringify({content: comment})
+    }
+
+    $.ajax(request)
+      .done(data => this.addCommentSuccess(movieId, data))
+      .fail(err => this.addCommentFail(err.responseJSON))
 
     return true
   }

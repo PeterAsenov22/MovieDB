@@ -4,13 +4,15 @@ class FormActions {
   constructor () {
     this.generateActions(
       'handleInputChange',
+      'handleCommentChange',
       'usernameValidationFail',
       'passwordValidationFail',
       'genderValidationFail',
       'firstNameValidationFail',
       'lastNameValidationFail',
       'ageValidationFail',
-      'unauthorizedAccessAttempt'
+      'unauthorizedAccessAttempt',
+      'commentValidationFail'
     )
   }
 }
