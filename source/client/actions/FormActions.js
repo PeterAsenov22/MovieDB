@@ -9,7 +9,8 @@ class FormActions {
       'genderValidationFail',
       'firstNameValidationFail',
       'lastNameValidationFail',
-      'ageValidationFail'
+      'ageValidationFail',
+      'unauthorizedAccessAttempt'
     )
   }
 }

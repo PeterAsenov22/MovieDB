@@ -159,6 +159,13 @@ class FormStore {
   onHandleInputChange (event) {
     this.user[event.target.name] = event.target.value
   }
+
+  onUnauthorizedAccessAttempt () {
+    this.formSubmitState = 'has-error'
+    this.message = 'Please login'
+    this.usernameValidationState = ''
+    this.passwordValidationState = ''
+  }
 }
 
 export default alt.createStore(FormStore)

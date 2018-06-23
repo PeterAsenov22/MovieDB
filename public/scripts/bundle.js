@@ -3057,7 +3057,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var FormActions = function FormActions() {
   _classCallCheck(this, FormActions);
 
-  this.generateActions('handleInputChange', 'usernameValidationFail', 'passwordValidationFail', 'genderValidationFail', 'firstNameValidationFail', 'lastNameValidationFail', 'ageValidationFail');
+  this.generateActions('handleInputChange', 'usernameValidationFail', 'passwordValidationFail', 'genderValidationFail', 'firstNameValidationFail', 'lastNameValidationFail', 'ageValidationFail', 'unauthorizedAccessAttempt');
 };
 
 exports.default = _alt2.default.createActions(FormActions);
@@ -3156,7 +3156,7 @@ var HomeActions = function () {
 
 exports.default = _alt2.default.createActions(HomeActions);
 
-},{"../alt":39,"../utilities/RequesterTMDB":74}],36:[function(require,module,exports){
+},{"../alt":39,"../utilities/RequesterTMDB":75}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5673,19 +5673,23 @@ var _UserLogin = require('./components/UserLogin');
 
 var _UserLogin2 = _interopRequireDefault(_UserLogin);
 
+var _Authorize = require('./utilities/Authorize');
+
+var _Authorize2 = _interopRequireDefault(_Authorize);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _react2.default.createElement(
   _reactRouter.Route,
   { component: _App2.default },
   _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default }),
-  _react2.default.createElement(_reactRouter.Route, { path: '/movie/add', component: _MovieAdd2.default }),
-  _react2.default.createElement(_reactRouter.Route, { path: '/user/profile/:userId', component: _UserProfile2.default }),
+  _react2.default.createElement(_reactRouter.Route, { path: '/movie/add', component: (0, _Authorize2.default)(_MovieAdd2.default) }),
+  _react2.default.createElement(_reactRouter.Route, { path: '/user/profile/:userId', component: (0, _Authorize2.default)(_UserProfile2.default) }),
   _react2.default.createElement(_reactRouter.Route, { path: '/user/register', component: _UserRegister2.default }),
   _react2.default.createElement(_reactRouter.Route, { path: '/user/login', component: _UserLogin2.default })
 );
 
-},{"./components/App":40,"./components/Home":42,"./components/MovieAdd":43,"./components/UserLogin":45,"./components/UserProfile":46,"./components/UserRegister":47,"react":"react","react-router":"react-router"}],67:[function(require,module,exports){
+},{"./components/App":40,"./components/Home":42,"./components/MovieAdd":43,"./components/UserLogin":45,"./components/UserProfile":46,"./components/UserRegister":47,"./utilities/Authorize":73,"react":"react","react-router":"react-router"}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5923,6 +5927,14 @@ var FormStore = function () {
     value: function onHandleInputChange(event) {
       this.user[event.target.name] = event.target.value;
     }
+  }, {
+    key: 'onUnauthorizedAccessAttempt',
+    value: function onUnauthorizedAccessAttempt() {
+      this.formSubmitState = 'has-error';
+      this.message = 'Please login';
+      this.usernameValidationState = '';
+      this.passwordValidationState = '';
+    }
   }]);
 
   return FormStore;
@@ -6079,7 +6091,7 @@ var MovieAddStore = function () {
 
 exports.default = _alt2.default.createStore(MovieAddStore);
 
-},{"../actions/MovieAddActions":36,"../alt":39,"../utilities/Helpers":73}],71:[function(require,module,exports){
+},{"../actions/MovieAddActions":36,"../alt":39,"../utilities/Helpers":74}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6180,6 +6192,85 @@ var UserStore = function () {
 exports.default = _alt2.default.createStore(UserStore);
 
 },{"../actions/UserActions":38,"../alt":39}],73:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.default = authorize;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _UserStore = require('../stores/UserStore');
+
+var _UserStore2 = _interopRequireDefault(_UserStore);
+
+var _FormActions = require('../actions/FormActions');
+
+var _FormActions2 = _interopRequireDefault(_FormActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function authorize(ChildComponent) {
+  return function (_Component) {
+    _inherits(Authorization, _Component);
+
+    function Authorization(props) {
+      _classCallCheck(this, Authorization);
+
+      var _this = _possibleConstructorReturn(this, (Authorization.__proto__ || Object.getPrototypeOf(Authorization)).call(this, props));
+
+      _this.state = _UserStore2.default.getState();
+      _this.onChange = _this.onChange.bind(_this);
+      return _this;
+    }
+
+    _createClass(Authorization, [{
+      key: 'onChange',
+      value: function onChange(state) {
+        this.setState(state);
+      }
+    }, {
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        if (this.state.loggedInUserId === '') {
+          this.props.history.pushState(null, '/user/login');
+          _FormActions2.default.unauthorizedAccessAttempt();
+        }
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        _UserStore2.default.listen(this.onChange);
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        _UserStore2.default.unlisten(this.onChange);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2.default.createElement(ChildComponent, this.props);
+      }
+    }]);
+
+    return Authorization;
+  }(_react.Component);
+}
+
+},{"../actions/FormActions":34,"../stores/UserStore":72,"react":"react"}],74:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6224,7 +6315,7 @@ var Helpers = function () {
 
 exports.default = Helpers;
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
