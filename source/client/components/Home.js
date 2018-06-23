@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import MovieCard from './sub-components/MovieCard'
-import HomeActions from '../actions/HomeActions'
-import HomeStore from '../stores/HomeStore'
+import MovieActions from '../actions/MovieActions'
+import MovieStore from '../stores/MovieStore'
 
 class Home extends Component {
   constructor (props) {
     super(props)
-    this.state = HomeStore.getState()
+    this.state = MovieStore.getState()
 
     this.onChange = this.onChange.bind(this)
   }
@@ -16,12 +16,12 @@ class Home extends Component {
   }
 
   componentDidMount () {
-    HomeStore.listen(this.onChange)
-    HomeActions.getTopTenMovies()
+    MovieStore.listen(this.onChange)
+    MovieActions.getTopTenMovies()
   }
 
   componentWillUnmount () {
-    HomeStore.unlisten(this.onChange)
+    MovieStore.unlisten(this.onChange)
   }
 
   render () {
