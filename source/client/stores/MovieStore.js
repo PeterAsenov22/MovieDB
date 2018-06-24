@@ -32,10 +32,17 @@ class MovieStore {
     console.log('Could not connect to DB')
   }
 
-  onAddCommentSuccess (movieId, data) {
-    let comment = data.content
-    let movie = this.topTenMovies.find(m => m._id === movieId)
-    movie.comments.unshift(comment)
+  onAddCommentSuccess (data) {
+    let comment = data.comment
+    let movieId = data.comment.movie
+
+    for (let i = 0; i < this.topTenMovies.length; i++) {
+      if (this.topTenMovies[i]._id === movieId) {
+        this.topTenMovies[i].comments.unshift(comment)
+      }
+    }
+
+    console.log(this.topTenMovies)
   }
 }
 

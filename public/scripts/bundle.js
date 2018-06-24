@@ -3136,7 +3136,7 @@ var MovieActions = function () {
       };
 
       $.ajax(request).done(function (data) {
-        return _this3.addCommentSuccess(movieId, data);
+        return _this3.addCommentSuccess(data);
       }).fail(function (err) {
         return _this3.addCommentFail(err.responseJSON);
       });
@@ -5882,7 +5882,8 @@ var FormStore = function () {
       onRegisterUserSuccess: _UserActions2.default.registerUserSuccess,
       onLoginUserSuccess: _UserActions2.default.loginUserSuccess,
       onLoginUserFail: _UserActions2.default.loginUserFail,
-      onAddCommentFail: _MovieActions2.default.addCommentFail
+      onAddCommentFail: _MovieActions2.default.addCommentFail,
+      onAddCommentSuccess: _MovieActions2.default.addCommentSuccess
     });
 
     this.user = {
@@ -6047,6 +6048,13 @@ var FormStore = function () {
     value: function onCommentValidationFail() {
       this.commentValidationState = 'has-error';
       this.message = 'Please enter comment text';
+    }
+  }, {
+    key: 'onAddCommentSuccess',
+    value: function onAddCommentSuccess() {
+      this.commentValidationState = '';
+      this.message = '';
+      this.comment = '';
     }
   }, {
     key: 'onAddCommentFail',
@@ -6243,12 +6251,17 @@ var MovieStore = function () {
     }
   }, {
     key: 'onAddCommentSuccess',
-    value: function onAddCommentSuccess(movieId, data) {
-      var comment = data.content;
-      var movie = this.topTenMovies.find(function (m) {
-        return m._id === movieId;
-      });
-      movie.comments.unshift(comment);
+    value: function onAddCommentSuccess(data) {
+      var comment = data.comment;
+      var movieId = data.comment.movie;
+
+      for (var i = 0; i < this.topTenMovies.length; i++) {
+        if (this.topTenMovies[i]._id === movieId) {
+          this.topTenMovies[i].comments.unshift(comment);
+        }
+      }
+
+      console.log(this.topTenMovies);
     }
   }]);
 

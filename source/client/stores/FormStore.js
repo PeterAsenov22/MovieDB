@@ -11,7 +11,8 @@ class FormStore {
       onRegisterUserSuccess: UserActions.registerUserSuccess,
       onLoginUserSuccess: UserActions.loginUserSuccess,
       onLoginUserFail: UserActions.loginUserFail,
-      onAddCommentFail: MovieActions.addCommentFail
+      onAddCommentFail: MovieActions.addCommentFail,
+      onAddCommentSuccess: MovieActions.addCommentSuccess
     })
 
     this.user = {
@@ -164,6 +165,12 @@ class FormStore {
   onCommentValidationFail () {
     this.commentValidationState = 'has-error'
     this.message = 'Please enter comment text'
+  }
+
+  onAddCommentSuccess () {
+    this.commentValidationState = ''
+    this.message = ''
+    this.comment = ''
   }
 
   onAddCommentFail (err) {

@@ -75,7 +75,7 @@ class MovieActions {
     }
 
     $.ajax(request)
-      .done(data => this.addCommentSuccess(movieId, data))
+      .done(data => this.addCommentSuccess(data))
       .fail(err => this.addCommentFail(err.responseJSON))
 
     return true
