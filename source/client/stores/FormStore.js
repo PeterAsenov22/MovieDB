@@ -12,7 +12,9 @@ class FormStore {
       onLoginUserSuccess: UserActions.loginUserSuccess,
       onLoginUserFail: UserActions.loginUserFail,
       onAddCommentFail: MovieActions.addCommentFail,
-      onAddCommentSuccess: MovieActions.addCommentSuccess
+      onAddCommentSuccess: MovieActions.addCommentSuccess,
+      onAddVoteFail: MovieActions.addVoteFail,
+      onAddVoteSuccess: MovieActions.addVoteSuccess
     })
 
     this.user = {
@@ -26,6 +28,7 @@ class FormStore {
     }
 
     this.comment = ''
+    this.score = ''
     this.usernameValidationState = ''
     this.passwordValidationState = ''
     this.firstNameValidationState = ''
@@ -33,6 +36,7 @@ class FormStore {
     this.ageValidationState = ''
     this.genderValidationState = ''
     this.commentValidationState = ''
+    this.scoreValidationState = ''
     this.formSubmitState = ''
     this.message = ''
   }
@@ -167,6 +171,11 @@ class FormStore {
     this.message = 'Please enter comment text'
   }
 
+  onScoreValidationFail () {
+    this.scoreValidationState = 'has-error'
+    this.message = 'Valid score is between 0-10'
+  }
+
   onAddCommentSuccess () {
     this.commentValidationState = ''
     this.message = ''
@@ -178,12 +187,26 @@ class FormStore {
     this.message = err.message
   }
 
+  onAddVoteSuccess () {
+    this.scoreValidationState = ''
+    this.message = ''
+  }
+
+  onAddVoteFail (err) {
+    this.scoreValidationState = 'has-error'
+    this.message = err.message
+  }
+
   onHandleInputChange (event) {
     this.user[event.target.name] = event.target.value
   }
 
   onHandleCommentChange (event) {
     this.comment = event.target.value
+  }
+
+  onHandleScoreChange (event) {
+    this.score = event.target.value
   }
 
   onUnauthorizedAccessAttempt () {

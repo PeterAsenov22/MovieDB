@@ -3010,7 +3010,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var FormActions = function FormActions() {
   _classCallCheck(this, FormActions);
 
-  this.generateActions('handleInputChange', 'handleCommentChange', 'usernameValidationFail', 'passwordValidationFail', 'genderValidationFail', 'firstNameValidationFail', 'lastNameValidationFail', 'ageValidationFail', 'unauthorizedAccessAttempt', 'commentValidationFail');
+  this.generateActions('handleInputChange', 'handleCommentChange', 'handleScoreChange', 'usernameValidationFail', 'passwordValidationFail', 'genderValidationFail', 'firstNameValidationFail', 'lastNameValidationFail', 'ageValidationFail', 'unauthorizedAccessAttempt', 'commentValidationFail', 'scoreValidationFail');
 };
 
 exports.default = _alt2.default.createActions(FormActions);
@@ -3040,7 +3040,7 @@ var MovieActions = function () {
   function MovieActions() {
     _classCallCheck(this, MovieActions);
 
-    this.generateActions('getTopTenMoviesSuccess', 'getTopTenMoviesFail', 'getFiveRecentMoviesSuccess', 'getFiveRecentMoviesFail', 'emptyTopTenMovies', 'addMovieToTopTen', 'addCommentSuccess', 'addCommentFail');
+    this.generateActions('getTopTenMoviesSuccess', 'getTopTenMoviesFail', 'getFiveRecentMoviesSuccess', 'getFiveRecentMoviesFail', 'emptyTopTenMovies', 'addMovieToTopTen', 'addCommentSuccess', 'addCommentFail', 'addVoteSuccess', 'addVoteFail');
   }
 
   _createClass(MovieActions, [{
@@ -3083,7 +3083,9 @@ var MovieActions = function () {
               _id: movie._id,
               name: movie.name,
               description: movie.description,
-              genres: movie.genres
+              genres: movie.genres,
+              votes: movie.votes,
+              score: movie.score
             };
 
             _RequesterTMDB2.default.getMoviePoster(movie.name).then(function (tmdbResponse) {
@@ -3095,7 +3097,10 @@ var MovieActions = function () {
               getComments(movie._id).then(function (comments) {
                 movieData.comments = comments;
 
-                _this2.addMovieToTopTen(movieData);
+                getLoggedInUserVote(movie._id).then(function (vote) {
+                  movieData.loggedInUserScore = vote.voteScore;
+                  _this2.addMovieToTopTen(movieData);
+                });
               });
             });
           };
@@ -3143,6 +3148,27 @@ var MovieActions = function () {
 
       return true;
     }
+  }, {
+    key: 'addVote',
+    value: function addVote(movieId, score) {
+      var _this4 = this;
+
+      var request = {
+        url: '/api/movies/' + movieId + '/vote',
+        method: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify({ score: score })
+      };
+
+      $.ajax(request).done(function (data) {
+        data.movieId = movieId;
+        _this4.addVoteSuccess(data);
+      }).fail(function (err) {
+        return _this4.addVoteFail(err.responseJSON);
+      });
+
+      return true;
+    }
   }]);
 
   return MovieActions;
@@ -3162,6 +3188,24 @@ function getComments(movieId) {
       return resolve(data);
     }).fail(function (err) {
       return reject(err);
+    });
+  });
+}
+
+function getLoggedInUserVote(movieId, userId) {
+  return new Promise(function (resolve) {
+    var request = {
+      method: 'get'
+    };
+
+    if (userId) {
+      request.url = '/api/movies/' + movieId + '/vote?userId=' + userId;
+    } else {
+      request.url = '/api/movies/' + movieId + '/vote?user=loggedInUser';
+    }
+
+    $.ajax(request).done(function (data) {
+      return resolve(data);
     });
   });
 }
@@ -4936,6 +4980,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
+var _Helpers = require('../../utilities/Helpers');
+
+var _Helpers2 = _interopRequireDefault(_Helpers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4966,6 +5014,8 @@ var MovieCardInfo = function (_Component) {
         );
       });
 
+      var rating = _Helpers2.default.formatMovieRating(this.props.movie.score, this.props.movie.votes);
+
       return _react2.default.createElement(
         'div',
         { className: 'media-body' },
@@ -4993,7 +5043,22 @@ var MovieCardInfo = function (_Component) {
         _react2.default.createElement(
           'span',
           { className: 'votes' },
-          'Votes:'
+          'Votes:',
+          _react2.default.createElement(
+            'strong',
+            null,
+            this.props.movie.votes
+          )
+        ),
+        _react2.default.createElement(
+          'span',
+          { className: 'rating position pull-right' },
+          rating,
+          _react2.default.createElement(
+            'span',
+            { className: 'badge badge-up' },
+            this.props.movie.loggedInUserScore
+          )
         )
       );
     }
@@ -5004,7 +5069,7 @@ var MovieCardInfo = function (_Component) {
 
 exports.default = MovieCardInfo;
 
-},{"react":"react","react-router":"react-router"}],55:[function(require,module,exports){
+},{"../../utilities/Helpers":73,"react":"react","react-router":"react-router"}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5218,6 +5283,18 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _FormStore = require('../../stores/FormStore');
+
+var _FormStore2 = _interopRequireDefault(_FormStore);
+
+var _FormActions = require('../../actions/FormActions');
+
+var _FormActions2 = _interopRequireDefault(_FormActions);
+
+var _MovieActions = require('../../actions/MovieActions');
+
+var _MovieActions2 = _interopRequireDefault(_MovieActions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5229,13 +5306,43 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MovieVotePanel = function (_Component) {
   _inherits(MovieVotePanel, _Component);
 
-  function MovieVotePanel() {
+  function MovieVotePanel(props) {
     _classCallCheck(this, MovieVotePanel);
 
-    return _possibleConstructorReturn(this, (MovieVotePanel.__proto__ || Object.getPrototypeOf(MovieVotePanel)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (MovieVotePanel.__proto__ || Object.getPrototypeOf(MovieVotePanel)).call(this, props));
+
+    _this.state = _FormStore2.default.getState();
+    _this.onChange = _this.onChange.bind(_this);
+    return _this;
   }
 
   _createClass(MovieVotePanel, [{
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _FormStore2.default.listen(this.onChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _FormStore2.default.unlisten(this.onChange);
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(event) {
+      event.preventDefault();
+
+      if (this.state.score > 10) {
+        return _FormActions2.default.scoreValidationFail();
+      }
+
+      _MovieActions2.default.addVote(this.props.movieId, this.state.score);
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -5247,7 +5354,37 @@ var MovieVotePanel = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'media-body' },
-            'Hello from MovieVotePanel'
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group ' + this.state.scoreValidationState },
+              _react2.default.createElement(
+                'span',
+                { className: 'help-block' },
+                this.state.message
+              )
+            ),
+            _react2.default.createElement(
+              'form',
+              { className: 'form-inline', onSubmit: this.handleSubmit.bind(this) },
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group ' + this.state.scoreValidationState },
+                _react2.default.createElement(
+                  'label',
+                  { className: 'control-label' },
+                  'Score'
+                ),
+                _react2.default.createElement('input', {
+                  className: 'form-control',
+                  step: '0.1', type: 'number"',
+                  value: this.state.score || this.props.loggedInUserScore,
+                  onChange: _FormActions2.default.handleScoreChange }),
+                _react2.default.createElement('input', {
+                  className: 'btn btn-primary',
+                  type: 'submit',
+                  value: 'Vote' })
+              )
+            )
           )
         )
       );
@@ -5259,7 +5396,7 @@ var MovieVotePanel = function (_Component) {
 
 exports.default = MovieVotePanel;
 
-},{"react":"react"}],59:[function(require,module,exports){
+},{"../../actions/FormActions":33,"../../actions/MovieActions":34,"../../stores/FormStore":67,"react":"react"}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5883,7 +6020,9 @@ var FormStore = function () {
       onLoginUserSuccess: _UserActions2.default.loginUserSuccess,
       onLoginUserFail: _UserActions2.default.loginUserFail,
       onAddCommentFail: _MovieActions2.default.addCommentFail,
-      onAddCommentSuccess: _MovieActions2.default.addCommentSuccess
+      onAddCommentSuccess: _MovieActions2.default.addCommentSuccess,
+      onAddVoteFail: _MovieActions2.default.addVoteFail,
+      onAddVoteSuccess: _MovieActions2.default.addVoteSuccess
     });
 
     this.user = {
@@ -5897,6 +6036,7 @@ var FormStore = function () {
     };
 
     this.comment = '';
+    this.score = '';
     this.usernameValidationState = '';
     this.passwordValidationState = '';
     this.firstNameValidationState = '';
@@ -5904,6 +6044,7 @@ var FormStore = function () {
     this.ageValidationState = '';
     this.genderValidationState = '';
     this.commentValidationState = '';
+    this.scoreValidationState = '';
     this.formSubmitState = '';
     this.message = '';
   }
@@ -6050,6 +6191,12 @@ var FormStore = function () {
       this.message = 'Please enter comment text';
     }
   }, {
+    key: 'onScoreValidationFail',
+    value: function onScoreValidationFail() {
+      this.scoreValidationState = 'has-error';
+      this.message = 'Valid score is between 0-10';
+    }
+  }, {
     key: 'onAddCommentSuccess',
     value: function onAddCommentSuccess() {
       this.commentValidationState = '';
@@ -6063,6 +6210,18 @@ var FormStore = function () {
       this.message = err.message;
     }
   }, {
+    key: 'onAddVoteSuccess',
+    value: function onAddVoteSuccess() {
+      this.scoreValidationState = '';
+      this.message = '';
+    }
+  }, {
+    key: 'onAddVoteFail',
+    value: function onAddVoteFail(err) {
+      this.scoreValidationState = 'has-error';
+      this.message = err.message;
+    }
+  }, {
     key: 'onHandleInputChange',
     value: function onHandleInputChange(event) {
       this.user[event.target.name] = event.target.value;
@@ -6071,6 +6230,11 @@ var FormStore = function () {
     key: 'onHandleCommentChange',
     value: function onHandleCommentChange(event) {
       this.comment = event.target.value;
+    }
+  }, {
+    key: 'onHandleScoreChange',
+    value: function onHandleScoreChange(event) {
+      this.score = event.target.value;
     }
   }, {
     key: 'onUnauthorizedAccessAttempt',
@@ -6262,6 +6426,39 @@ var MovieStore = function () {
       }
 
       console.log(this.topTenMovies);
+    }
+  }, {
+    key: 'onAddVoteSuccess',
+    value: function onAddVoteSuccess(data) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.topTenMovies[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var movie = _step.value;
+
+          if (movie._id === data.movieId) {
+            movie.loggedInUserScore = data.voteScore;
+            movie.score = data.movieScore;
+            movie.votes = data.movieVotes;
+            break;
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     }
   }]);
 
@@ -6486,6 +6683,21 @@ var Helpers = function () {
       }
 
       return array;
+    }
+  }, {
+    key: "formatMovieRating",
+    value: function formatMovieRating(score, votes) {
+      var rating = score / votes;
+
+      if (isNaN(rating)) {
+        rating = 0;
+      }
+
+      if (rating % 1 !== 0) {
+        rating = rating.toFixed(1);
+      }
+
+      return rating;
     }
   }]);
 

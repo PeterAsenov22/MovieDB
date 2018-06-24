@@ -5,6 +5,7 @@ class FormActions {
     this.generateActions(
       'handleInputChange',
       'handleCommentChange',
+      'handleScoreChange',
       'usernameValidationFail',
       'passwordValidationFail',
       'genderValidationFail',
@@ -12,7 +13,8 @@ class FormActions {
       'lastNameValidationFail',
       'ageValidationFail',
       'unauthorizedAccessAttempt',
-      'commentValidationFail'
+      'commentValidationFail',
+      'scoreValidationFail'
     )
   }
 }

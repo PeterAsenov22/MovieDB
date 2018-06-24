@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
+import Helpers from '../../utilities/Helpers'
 
 class MovieCardInfo extends Component {
   render () {
@@ -8,6 +9,8 @@ class MovieCardInfo extends Component {
         <strong key={this.props.movie._id + genre}>{genre}</strong>
       )
     })
+
+    let rating = Helpers.formatMovieRating(this.props.movie.score, this.props.movie.votes)
 
     return (
       <div className='media-body'>
@@ -20,9 +23,14 @@ class MovieCardInfo extends Component {
         <br />
         <p>{this.props.movie.description}</p>
         <span className='votes'>Votes:
-        { /* <strong>{this.state.movieVotes}</strong> */ }
+          <strong>{this.props.movie.votes}</strong>
         </span>
-        {/* {nodes.rating} */}
+        <span className='rating position pull-right'>
+          { rating }
+          <span className='badge badge-up'>
+            { this.props.movie.loggedInUserScore }
+          </span>
+        </span>
       </div>
     )
   }

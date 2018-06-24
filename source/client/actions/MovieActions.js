@@ -11,7 +11,9 @@ class MovieActions {
       'emptyTopTenMovies',
       'addMovieToTopTen',
       'addCommentSuccess',
-      'addCommentFail'
+      'addCommentFail',
+      'addVoteSuccess',
+      'addVoteFail'
     )
   }
 
@@ -41,7 +43,9 @@ class MovieActions {
             _id: movie._id,
             name: movie.name,
             description: movie.description,
-            genres: movie.genres
+            genres: movie.genres,
+            votes: movie.votes,
+            score: movie.score
           }
 
           TMDB
@@ -56,7 +60,11 @@ class MovieActions {
                 .then(comments => {
                   movieData.comments = comments
 
-                  this.addMovieToTopTen(movieData)
+                  getLoggedInUserVote(movie._id)
+                    .then(vote => {
+                      movieData.loggedInUserScore = vote.voteScore
+                      this.addMovieToTopTen(movieData)
+                    })
                 })
             })
         }
@@ -80,6 +88,24 @@ class MovieActions {
 
     return true
   }
+
+  addVote (movieId, score) {
+    let request = {
+      url: `/api/movies/${movieId}/vote`,
+      method: 'post',
+      contentType: 'application/json',
+      data: JSON.stringify({score})
+    }
+
+    $.ajax(request)
+      .done(data => {
+        data.movieId = movieId
+        this.addVoteSuccess(data)
+      })
+      .fail(err => this.addVoteFail(err.responseJSON))
+
+    return true
+  }
 }
 
 export default alt.createActions(MovieActions)
@@ -94,5 +120,22 @@ function getComments (movieId) {
     $.ajax(request)
       .done(data => resolve(data))
       .fail(err => reject(err))
+  })
+}
+
+function getLoggedInUserVote (movieId, userId) {
+  return new Promise(resolve => {
+    let request = {
+      method: 'get'
+    }
+
+    if (userId) {
+      request.url = `/api/movies/${movieId}/vote?userId=${userId}`
+    } else {
+      request.url = `/api/movies/${movieId}/vote?user=loggedInUser`
+    }
+
+    $.ajax(request)
+      .done(data => resolve(data))
   })
 }

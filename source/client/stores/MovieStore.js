@@ -44,6 +44,17 @@ class MovieStore {
 
     console.log(this.topTenMovies)
   }
+
+  onAddVoteSuccess (data) {
+    for (let movie of this.topTenMovies) {
+      if (movie._id === data.movieId) {
+        movie.loggedInUserScore = data.voteScore
+        movie.score = data.movieScore
+        movie.votes = data.movieVotes
+        break
+      }
+    }
+  }
 }
 
 export default alt.createStore(MovieStore)
