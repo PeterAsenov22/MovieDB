@@ -5221,6 +5221,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
+var _Authorize = require('../../utilities/Authorize');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5229,8 +5231,32 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var MoviePanelToggles = function (_Component) {
-  _inherits(MoviePanelToggles, _Component);
+var VoteToggle = function (_Component) {
+  _inherits(VoteToggle, _Component);
+
+  function VoteToggle() {
+    _classCallCheck(this, VoteToggle);
+
+    return _possibleConstructorReturn(this, (VoteToggle.__proto__ || Object.getPrototypeOf(VoteToggle)).apply(this, arguments));
+  }
+
+  _createClass(VoteToggle, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'a',
+        { className: 'btn btn-primary',
+          onClick: this.props.toggleVotePanel },
+        this.props.showVotePanel ? 'Hide' : 'Vote'
+      );
+    }
+  }]);
+
+  return VoteToggle;
+}(_react.Component);
+
+var MoviePanelToggles = function (_Component2) {
+  _inherits(MoviePanelToggles, _Component2);
 
   function MoviePanelToggles() {
     _classCallCheck(this, MoviePanelToggles);
@@ -5250,12 +5276,9 @@ var MoviePanelToggles = function (_Component) {
             onClick: this.props.toggleCommentsPanel },
           this.props.showCommentsPanel ? 'Hide' : 'Comments'
         ),
-        _react2.default.createElement(
-          'a',
-          { className: 'btn btn-primary',
-            onClick: this.props.toggleVotePanel },
-          this.props.showVotePanel ? 'Hide' : 'Vote'
-        ),
+        _react2.default.createElement(_Authorize.Concealer, { ChildComponent: VoteToggle,
+          toggleVotePanel: this.props.toggleVotePanel,
+          showVotePanel: this.props.showVotePanel }),
         _react2.default.createElement(
           _reactRouter.Link,
           { to: '/movie/' + this.props.movieId + '/review/add', className: 'btn btn-warning' },
@@ -5270,7 +5293,7 @@ var MoviePanelToggles = function (_Component) {
 
 exports.default = MoviePanelToggles;
 
-},{"react":"react","react-router":"react-router"}],58:[function(require,module,exports){
+},{"../../utilities/Authorize":72,"react":"react","react-router":"react-router"}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6573,6 +6596,7 @@ exports.default = _alt2.default.createStore(UserStore);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Concealer = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6645,6 +6669,45 @@ function authorize(ChildComponent) {
     return Authorization;
   }(_react.Component);
 }
+
+var Concealer = exports.Concealer = function (_Component2) {
+  _inherits(Concealer, _Component2);
+
+  function Concealer(props) {
+    _classCallCheck(this, Concealer);
+
+    var _this2 = _possibleConstructorReturn(this, (Concealer.__proto__ || Object.getPrototypeOf(Concealer)).call(this, props));
+
+    _this2.state = _UserStore2.default.getState();
+    _this2.onChange = _this2.onChange.bind(_this2);
+    return _this2;
+  }
+
+  _createClass(Concealer, [{
+    key: 'onChange',
+    value: function onChange(state) {
+      this.setState(state);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _UserStore2.default.listen(this.onChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _UserStore2.default.unlisten(this.onChange);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var ChildComponent = this.props.ChildComponent;
+      return this.state.loggedInUserId ? _react2.default.createElement(ChildComponent, this.props) : null;
+    }
+  }]);
+
+  return Concealer;
+}(_react.Component);
 
 },{"../actions/FormActions":33,"../stores/UserStore":71,"react":"react"}],73:[function(require,module,exports){
 "use strict";

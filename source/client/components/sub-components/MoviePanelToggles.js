@@ -1,6 +1,17 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
+import { Concealer } from '../../utilities/Authorize'
 
+class VoteToggle extends Component {
+  render () {
+    return (
+      <a className='btn btn-primary'
+        onClick={this.props.toggleVotePanel}>
+        {this.props.showVotePanel ? 'Hide' : 'Vote'}
+      </a>
+    )
+  }
+}
 class MoviePanelToggles extends Component {
   render () {
     return (
@@ -9,10 +20,9 @@ class MoviePanelToggles extends Component {
           onClick={this.props.toggleCommentsPanel}>
           {this.props.showCommentsPanel ? 'Hide' : 'Comments'}
         </a>
-        <a className='btn btn-primary'
-          onClick={this.props.toggleVotePanel}>
-          {this.props.showVotePanel ? 'Hide' : 'Vote'}
-        </a>
+        <Concealer ChildComponent={VoteToggle}
+          toggleVotePanel={this.props.toggleVotePanel}
+          showVotePanel={this.props.showVotePanel} />
         <Link to={`/movie/${this.props.movieId}/review/add`} className='btn btn-warning'>
           Write review
         </Link>

@@ -35,3 +35,31 @@ export default function authorize (ChildComponent) {
     }
   }
 }
+
+export class Concealer extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = UserStore.getState()
+    this.onChange = this.onChange.bind(this)
+  }
+
+  onChange (state) {
+    this.setState(state)
+  }
+
+  componentDidMount () {
+    UserStore.listen(this.onChange)
+  }
+
+  componentWillUnmount () {
+    UserStore.unlisten(this.onChange)
+  }
+
+  render () {
+    let ChildComponent = this.props.ChildComponent
+    return this.state.loggedInUserId
+      ? <ChildComponent {...this.props} />
+      : null
+  }
+}
